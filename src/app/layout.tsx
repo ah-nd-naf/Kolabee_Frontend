@@ -1,0 +1,56 @@
+import type { Metadata } from "next";
+import { Space_Grotesk, DM_Sans, Geist } from "next/font/google";
+import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+
+
+/* ── Google Fonts ── */
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-heading",
+  display: "swap",
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+const dmSans = DM_Sans({
+  subsets: ["latin"],
+  variable: "--font-body",
+  display: "swap",
+  weight: ["300", "400", "500", "600", "700"],
+});
+
+/* ── SEO metadata ── */
+export const metadata: Metadata = {
+  title: {
+    default: "Kolabee — Creator & Partner Collaboration Platform",
+    template: "%s | Kolabee",
+  },
+  description:
+    "Kolabee connects creators and business partners through transparent link analytics, performance tracking, and seamless collaboration tools.",
+  keywords: ["creator platform", "link analytics", "business partners", "collaboration"],
+  authors: [{ name: "Kolabee" }],
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    title: "Kolabee — Creator & Partner Collaboration Platform",
+    description:
+      "Connects creators and business partners through transparent link analytics and performance tracking.",
+    siteName: "Kolabee",
+  },
+};
+
+export default function RootLayout({
+  children,
+}: Readonly<{ children: React.ReactNode }>) {
+  return (
+    <html
+      lang="en"
+      className={cn(spaceGrotesk.variable, dmSans.variable, "font-sans", geist.variable)}
+      suppressHydrationWarning
+    >
+      <body className="antialiased">{children}</body>
+    </html>
+  );
+}
