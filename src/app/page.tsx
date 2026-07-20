@@ -469,8 +469,15 @@ export default function LandingPage() {
       </section>
 
       {/* 2. Service Categories Section */}
-      <section id="features" className="px-6 py-24 sm:py-32 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+      <section id="features" className="relative px-6 py-24 sm:py-32 lg:px-8 bg-stone-50 dark:bg-gradient-to-b dark:from-cyan-950/40 dark:to-[#0f1923] overflow-hidden border-t border-stone-200 dark:border-white/5">
+        
+        {/* Ambient blobs for dark mode depth */}
+        <div className="absolute inset-0 z-0 pointer-events-none hidden dark:block">
+          <div className="absolute top-[20%] left-[10%] w-[40%] h-[50%] rounded-full bg-cyan-500/10 blur-[100px]" />
+          <div className="absolute bottom-[10%] right-[10%] w-[30%] h-[40%] rounded-full bg-blue-500/10 blur-[100px]" />
+        </div>
+
+        <div className="mx-auto max-w-7xl relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: customEasing }} className="mb-16 text-center">
             <h2 className="font-heading text-3xl font-bold tracking-tight text-cyan-950 sm:text-4xl">One platform. Four ways to grow.</h2>
             <p className="mt-4 text-lg text-stone-600">Stop juggling spreadsheets and DMs. Handle every type of creator collaboration in one place.</p>
@@ -479,8 +486,8 @@ export default function LandingPage() {
             {services.map((service) => {
               const Icon = service.icon;
               return (
-                <motion.div key={service.title} variants={serviceCardVariants} whileHover={{ y: -8 }} className="group relative rounded-2xl bg-white p-8 ring-1 ring-stone-200/50 shadow-sm transition-shadow hover:shadow-xl">
-                  <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600 ring-1 ring-cyan-100 transition-colors group-hover:bg-cyan-600 group-hover:text-white">
+                <motion.div key={service.title} variants={serviceCardVariants} whileHover={{ y: -8 }} className="premium-glass group relative rounded-2xl p-8 transition-all">
+                  <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 ring-1 ring-cyan-100 dark:ring-cyan-500/20 transition-colors group-hover:bg-cyan-600 group-hover:text-white dark:group-hover:bg-cyan-500">
                     <Icon className="h-6 w-6" />
                   </div>
                   <h3 className="font-heading text-lg font-semibold text-cyan-950">{service.title}</h3>
@@ -493,8 +500,15 @@ export default function LandingPage() {
       </section>
 
       {/* 3. How It Works Section */}
-      <section className="bg-white dark:bg-[#0f1923] px-6 py-24 sm:py-32 lg:px-8">
-        <div className="mx-auto max-w-7xl">
+      <section className="relative px-6 py-24 sm:py-32 lg:px-8 bg-white dark:bg-gradient-to-b dark:from-[#0f1923] dark:to-[#0a0f14] overflow-hidden">
+        
+        {/* Ambient blobs for dark mode depth */}
+        <div className="absolute inset-0 z-0 pointer-events-none hidden dark:block">
+          <div className="absolute top-[30%] left-[20%] w-[30%] h-[40%] rounded-full bg-cyan-500/10 blur-[120px]" />
+          <div className="absolute bottom-[20%] right-[20%] w-[40%] h-[50%] rounded-full bg-purple-500/10 blur-[120px]" />
+        </div>
+
+        <div className="mx-auto max-w-7xl relative z-10">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: customEasing }} className="mb-16 text-center">
             <h2 className="font-heading text-3xl font-bold tracking-tight text-cyan-950 sm:text-4xl">How Kolabee works</h2>
             <p className="mt-4 text-lg text-stone-600">Built to make collaboration seamless, whichever side of the brief you are on.</p>
@@ -538,13 +552,19 @@ export default function LandingPage() {
                 {flowData[activePersona].map((step, index) => {
                   const Icon = step.icon;
                   return (
-                    <div key={step.step} className="relative flex flex-col items-center text-center">
-                      <div className="relative z-10 mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 ring-8 ring-white dark:ring-[#0f1923]">
+                    <div key={step.step} className="premium-glass relative flex flex-col items-center text-center p-8 rounded-3xl transition-all">
+                      <div className="relative z-10 mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 ring-8 ring-transparent">
                         <Icon className="h-7 w-7" />
                       </div>
-                      {/* Connecting Line */}
+                      {/* Next Step Indicator */}
                       {index !== flowData[activePersona].length - 1 && (
-                        <div className="absolute top-8 left-[60%] hidden h-[2px] w-[80%] bg-stone-200/60 dark:bg-white/10 md:block" />
+                        <motion.div 
+                          animate={{ x: [0, 5, 0] }}
+                          transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+                          className="absolute top-1/2 -right-[20px] hidden md:flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white dark:bg-[#121c26] shadow-md ring-1 ring-stone-200/50 dark:ring-white/10 z-20 text-cyan-600 dark:text-cyan-500"
+                        >
+                          <ArrowRight className="h-5 w-5" />
+                        </motion.div>
                       )}
                       <h3 className="font-heading text-xl font-bold text-cyan-950">
                         <span className="mb-2 block text-sm font-medium text-cyan-600">Step {step.step}</span>

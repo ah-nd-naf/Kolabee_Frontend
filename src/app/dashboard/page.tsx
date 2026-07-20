@@ -121,14 +121,7 @@ export default function DashboardOverview() {
                 variants={cardVariants}
                 whileHover={{ y: -3 }}    
                 transition={{ duration: 0.22, ease: EASE }}
-                className="stat-card-glass rounded-2xl p-6"
-                style={{
-                  background: isDark ? "rgba(18, 18, 18, 0.4)" : "rgba(255,255,255,0.15)",
-                  border: isDark ? "1px solid rgba(255,255,255,0.15)" : "1px solid rgba(255,255,255,0.4)",
-                  boxShadow: " 0 8px 32px 0 rgba(0, 0, 0, 0.37)",
-                  backdropFilter: "blur(40px) saturate(160%)",
-                  WebkitBackdropFilter: "blur(40px) saturate(160%)",
-                } as React.CSSProperties}
+                className="premium-glass rounded-2xl p-6"
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-stone-500 dark:text-stone-400">{stat.label}</span>

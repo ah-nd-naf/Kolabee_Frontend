@@ -246,13 +246,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   );
 
   return (
-    <div className="h-screen flex w-full bg-stone-50 dark:bg-[#080c10] overflow-hidden text-stone-900 relative">
+    <div className="h-screen flex w-full bg-slate-100 dark:bg-[#080c10] overflow-hidden text-stone-900 relative">
       
       {/* Ambient Background Gradient for Glassmorphism */}
       <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-        <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-cyan-400/10 dark:bg-cyan-500/10 blur-[120px]" />
-        <div className="absolute top-[20%] -right-[10%] w-[40%] h-[60%] rounded-full bg-blue-400/10 dark:bg-blue-600/10 blur-[120px]" />
-        <div className="absolute -bottom-[20%] left-[20%] w-[60%] h-[50%] rounded-full bg-purple-400/10 dark:bg-purple-600/10 blur-[120px]" />
+        <div className="absolute -top-[10%] -left-[5%] w-[40%] h-[50%] rounded-full bg-cyan-400/30 dark:bg-cyan-500/10 blur-[100px]" />
+        <div className="absolute top-[30%] -right-[5%] w-[35%] h-[50%] rounded-full bg-blue-500/20 dark:bg-blue-600/10 blur-[120px]" />
+        <div className="absolute -bottom-[10%] left-[15%] w-[50%] h-[40%] rounded-full bg-purple-400/20 dark:bg-purple-600/10 blur-[100px]" />
       </div>
 
       <div className="z-10 flex w-full">
