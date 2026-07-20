@@ -1,4 +1,3 @@
-// src/app/dashboard/layout.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -19,9 +18,11 @@ import {
   Search,
   ArrowLeft,
   Home,
+  Plus
 } from "lucide-react";
 import { CommandPalette } from "@/components/ui/command-palette";
 import { ThemeToggle, ThemeToggleSimple } from "@/components/ui/theme-toggle";
+import { BriefWizard } from "@/components/ui/brief-wizard";
 
 // Canonical easing curve — [0.16, 1, 0.3, 1]
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -31,6 +32,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   const [persona, setPersona] = useState<"business" | "creator">("business");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [logoHovered, setLogoHovered] = useState(false);
+  const [isBriefWizardOpen, setIsBriefWizardOpen] = useState(false);
 
   useEffect(() => {
     setIsMobileMenuOpen(false);
@@ -199,7 +201,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </li>
 
           <li className="mt-auto -mx-2 space-y-3">
-            {/* Theme toggle — 3-way pill */}
             <div className="px-2 pt-1">
               <p className="mb-2 text-[10px] font-semibold uppercase tracking-widest text-cyan-600/60">Appearance</p>
               <ThemeToggle variant="full" />
@@ -247,6 +248,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   return (
     <div className="h-screen flex w-full bg-stone-50 overflow-hidden text-stone-900">
       <CommandPalette />
+      <BriefWizard isOpen={isBriefWizardOpen} onClose={() => setIsBriefWizardOpen(false)} />
 
       {/* Desktop sidebar */}
       <div className="hidden lg:flex lg:w-72 lg:flex-col lg:fixed lg:inset-y-0 lg:z-40">
@@ -320,6 +322,25 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           </h1>
 
           <div className="flex items-center gap-6">
+            
+            {/* NEW: Post Brief Button (Only visible for business persona) */}
+            <AnimatePresence>
+              {persona === "business" && (
+                <motion.button
+                  initial={{ opacity: 0, scale: 0.9 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  exit={{ opacity: 0, scale: 0.9 }}
+                  onClick={() => setIsBriefWizardOpen(true)}
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  className="flex items-center gap-2 rounded-full bg-cyan-600 px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 transition-colors"
+                >
+                  <Plus className="h-4 w-4" />
+                  Post Brief
+                </motion.button>
+              )}
+            </AnimatePresence>
+
             <motion.button
               onClick={triggerCommandPalette}
               whileHover={{ scale: 1.02 }}
