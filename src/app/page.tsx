@@ -1,7 +1,13 @@
 "use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef } from "react";
+import {
+  motion,
+  AnimatePresence,
+  useReducedMotion,
+  useMotionValue,
+  useSpring,
+} from "framer-motion";
 import {
   ArrowRight,
   Sparkles,
@@ -29,27 +35,207 @@ import {
   Users2,
   Building2,
   BadgeCheck,
+  ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
 import { CountUp } from "@/components/ui/count-up";
 import { Navbar } from "@/components/ui/navbar";
+import { ParticleField } from "@/components/ui/particle-field";
+
+/* ───────────────────────────────────────────────────
+   ANIMATED AURORA BACKGROUND
+   Three giant cyan blobs drift slowly behind the hero.
+   Inline CSS filter: blur(...) used for guaranteed rendering;
+   Tailwind arbitrary blur values can be unreliable at runtime.
+─────────────────────────────────────────────────── */
+function AnimatedAurora() {
+  const prefersReduced = useReducedMotion();
+
+  const sharedClass = "absolute will-change-transform";
+  const easing = [0.45, 0, 0.55, 1] as [number, number, number, number];
+
+  const blob1Style: React.CSSProperties = {
+    top: "-25%", left: "-15%",
+    width: "80vw", height: "80vw",
+    maxWidth: 900, maxHeight: 900,
+    borderRadius: "50%",
+    background: "radial-gradient(circle at center, rgba(8,145,178,0.55) 0%, rgba(8,145,178,0.18) 45%, transparent 70%)",
+    filter: "blur(90px)",
+  };
+  const blob2Style: React.CSSProperties = {
+    top: "10%", right: "-20%",
+    width: "75vw", height: "75vw",
+    maxWidth: 850, maxHeight: 850,
+    borderRadius: "50%",
+    background: "radial-gradient(circle at center, rgba(34,211,238,0.45) 0%, rgba(34,211,238,0.14) 45%, transparent 70%)",
+    filter: "blur(100px)",
+  };
+  const blob3Style: React.CSSProperties = {
+    bottom: "-30%", left: "10%",
+    width: "70vw", height: "70vw",
+    maxWidth: 800, maxHeight: 800,
+    borderRadius: "50%",
+    background: "radial-gradient(circle at center, rgba(103,232,249,0.40) 0%, rgba(103,232,249,0.12) 45%, transparent 70%)",
+    filter: "blur(110px)",
+  };
+
+  return (
+    <div
+      aria-hidden="true"
+      className="absolute inset-0 overflow-hidden"
+      style={{ background: "#083344", zIndex: 0 }}
+    >
+      {prefersReduced ? (
+        <>
+          <div className={sharedClass} style={blob1Style} />
+          <div className={sharedClass} style={blob2Style} />
+          <div className={sharedClass} style={blob3Style} />
+        </>
+      ) : (
+        <>
+          <motion.div
+            className={sharedClass} style={blob1Style}
+            animate={{ x: ["0%","18%","-6%","0%"], y: ["0%","-14%","10%","0%"], scale: [1, 1.15, 0.88, 1] }}
+            transition={{ duration: 24, ease: easing, repeat: Infinity, repeatType: "mirror" }}
+          />
+          <motion.div
+            className={sharedClass} style={blob2Style}
+            animate={{ x: ["0%","-14%","12%","0%"], y: ["0%","16%","-8%","0%"], scale: [1, 0.85, 1.12, 1] }}
+            transition={{ duration: 30, ease: easing, repeat: Infinity, repeatType: "mirror" }}
+          />
+          <motion.div
+            className={sharedClass} style={blob3Style}
+            animate={{ x: ["0%","10%","-18%","0%"], y: ["0%","8%","-12%","0%"], scale: [1, 1.2, 0.82, 1] }}
+            transition={{ duration: 18, ease: easing, repeat: Infinity, repeatType: "mirror" }}
+          />
+        </>
+      )}
+
+      {/* Centre vignette — keeps headline readable */}
+      <div
+        className="absolute inset-0"
+        style={{ background: "radial-gradient(ellipse 60% 55% at 50% 50%, transparent 30%, rgba(8,51,68,0.55) 100%)" }}
+      />
+
+      {/* SVG Noise grain ~4% */}
+      <div
+        className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none"
+        style={{
+          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E")`,
+          backgroundRepeat: "repeat",
+        }}
+      />
+    </div>
+  );
+}
+
+/* ───────────────────────────────────────────────────
+   CURSOR GLOW
+   A large soft radial glow that follows the cursor
+   with spring-based lag (stiffness:60, damping:20).
+   Disabled: touch devices & prefers-reduced-motion.
+─────────────────────────────────────────────────── */
+function CursorGlow({ containerRef }: { containerRef: React.RefObject<HTMLElement | null> }) {
+  const prefersReduced = useReducedMotion();
+
+  // Raw mouse position (in px relative to container)
+  const rawX = useMotionValue(-999);
+  const rawY = useMotionValue(-999);
+
+  // Spring-smoothed position — gives the "catching up" feel
+  const springConfig = { stiffness: 60, damping: 20, mass: 0.8 };
+  const x = useSpring(rawX, springConfig);
+  const y = useSpring(rawY, springConfig);
+
+  useEffect(() => {
+    if (prefersReduced) return;
+
+    // Check for coarse pointer (touch-only device) — skip glow
+    const isTouch = window.matchMedia("(pointer: coarse)").matches;
+    if (isTouch) return;
+
+    const el = containerRef.current;
+    if (!el) return;
+
+    const onMouseMove = (e: MouseEvent) => {
+      const rect = el.getBoundingClientRect();
+      rawX.set(e.clientX - rect.left);
+      rawY.set(e.clientY - rect.top);
+    };
+
+    const onMouseLeave = () => {
+      // Park the glow off-screen when cursor leaves
+      rawX.set(-999);
+      rawY.set(-999);
+    };
+
+    el.addEventListener("mousemove", onMouseMove, { passive: true });
+    el.addEventListener("mouseleave", onMouseLeave, { passive: true });
+    return () => {
+      el.removeEventListener("mousemove", onMouseMove);
+      el.removeEventListener("mouseleave", onMouseLeave);
+    };
+  }, [prefersReduced, containerRef, rawX, rawY]);
+
+  if (prefersReduced) return null;
+
+  return (
+    <motion.div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-0 z-[2] overflow-hidden"
+      style={{ top: 0, left: 0 }}
+    >
+      <motion.div
+        style={{
+          x,
+          y,
+          translateX: "-50%",
+          translateY: "-50%",
+          position: "absolute",
+          width: 600,
+          height: 600,
+          borderRadius: "50%",
+          background:
+            "radial-gradient(circle at center, rgba(34,211,238,0.12) 0%, rgba(34,211,238,0.05) 40%, transparent 70%)",
+          filter: "blur(40px)",
+          pointerEvents: "none",
+        }}
+      />
+    </motion.div>
+  );
+}
 
 export default function LandingPage() {
   const [activePersona, setActivePersona] = useState<"business" | "creator">("business");
+  // Ref passed to CursorGlow so it can track mouse position relative to the hero section
+  const heroRef = useRef<HTMLElement>(null);
 
-  // Consistent easing curve applied across all animations for a very smooth feel
-  // Cast as Bezier tuple so framer-motion's TypeScript types accept it
-  const customEasing = [0.16, 1, 0.3, 1] as [number, number, number, number];
+  // ── Consistent easing [0.16, 1, 0.3, 1] applied to ALL animations ──
+  const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
+  // Keep alias for sections below that already use customEasing
+  const customEasing = EASE;
 
-  // --- Hero Animations ---
+  // ── Per-element staggered hero entrance ──────────────────────────────
+  // Each element is animated individually so we can control order precisely:
+  // badge → h1 line 1 → h1 line 2 → subtext → CTAs
+  // Using delay prop rather than stagger parent so each is independently tuned.
+  const heroItem = (delay: number) => ({
+    hidden: { opacity: 0, y: 16 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.75, ease: EASE, delay },
+    },
+  });
+
+  // Keep legacy container/item variants for sections further down the page
   const heroContainerVariants = {
     hidden: { opacity: 0 },
     visible: { opacity: 1, transition: { staggerChildren: 0.15, delayChildren: 0.1 } },
   };
-
   const heroItemVariants = {
     hidden: { opacity: 0, y: 30 },
-    visible: { opacity: 1, y: 0, transition: { duration: 1, ease: customEasing } },
+    visible: { opacity: 1, y: 0, transition: { duration: 1, ease: EASE } },
   };
 
   // --- Service Category Animations ---
@@ -88,39 +274,196 @@ export default function LandingPage() {
     <main className="min-h-screen bg-stone-50 dark:bg-[#0a0f14] text-stone-900 dark:text-slate-100">
       <Navbar />
       
-      {/* 1. Hero Section */}
-      <section className="relative overflow-hidden bg-dark-section px-6 pt-32 pb-40 text-center sm:pt-40 sm:pb-48 lg:px-8">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(6,182,212,0.15),rgba(255,255,255,0))]" />
-        <motion.div className="mx-auto max-w-3xl" variants={heroContainerVariants} initial="hidden" animate="visible">
-          <motion.div variants={heroItemVariants} className="mb-8 flex justify-center">
-            <span className="inline-flex items-center gap-2 rounded-full bg-cyan-900/50 px-4 py-1.5 text-sm font-medium text-cyan-200 ring-1 ring-cyan-700/50">
-              <Sparkles className="h-4 w-4" />
+      {/* ─────────────────────────────────────────────
+         1. Hero Section
+         z-layers (bottom → top):
+           [0]  AnimatedAurora (dark teal base + blobs)
+           [1]  ParticleField canvas
+           [2]  CursorGlow (spring-following radial)
+           [3]  HeroGrain (animated noise texture)
+           [10] Hero text / badge / CTAs
+           [10] Scroll indicator
+      ───────────────────────────────────────────── */}
+      <section
+        ref={heroRef}
+        className="relative overflow-hidden px-6 flex flex-col justify-center items-center text-center lg:px-8"
+        style={{ minHeight: "100svh", paddingTop: "80px", paddingBottom: "80px" }}
+      >
+        {/* [0] Aurora background */}
+        <AnimatedAurora />
+
+        {/* [1] Particle field */}
+        <ParticleField
+          count={150}
+          color="#67e8f9"
+          minOpacity={0.2}
+          maxOpacity={0.6}
+          minRadius={1.0}
+          maxRadius={2.5}
+          speedFactor={1.5}
+          mouseRadius={150}
+          className="z-[1]"
+        />
+
+        {/* [2] Cursor glow — spring-follow, above particles */}
+        <CursorGlow containerRef={heroRef} />
+
+        {/* [3] Animated film-grain texture — above glow, below text */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-[3] opacity-[0.035] mix-blend-screen"
+          style={{
+            backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' seed='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23g)'/%3E%3C/svg%3E")`,
+            backgroundRepeat: "repeat",
+            animation: "grain-shift 8s steps(1) infinite",
+          }}
+        />
+
+        {/* Hero content — z-10 */}
+        <div className="mx-auto max-w-3xl relative z-10">
+
+          {/* Badge pill — animates in first, then breathes */}
+          <motion.div
+            variants={heroItem(0.05)}
+            initial="hidden"
+            animate="visible"
+            className="mb-8 flex justify-center"
+          >
+            <span className="inline-flex items-center gap-2 rounded-full bg-cyan-900/50 px-4 py-1.5 text-sm font-medium text-cyan-200 ring-1 ring-cyan-700/50 backdrop-blur-sm">
+              {/* Sparkle icon breathes on an infinite 2.5s loop */}
+              <motion.span
+                animate={{ opacity: [0.5, 1, 0.5], scale: [0.9, 1.15, 0.9] }}
+                transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity }}
+                className="flex"
+              >
+                <Sparkles className="h-4 w-4" />
+              </motion.span>
               <span>Matched to your brand, not just your budget.</span>
             </span>
           </motion.div>
-          <motion.div variants={heroItemVariants}>
-            <h1 className="font-heading text-5xl font-bold tracking-tight text-white sm:text-7xl">Everything a product launch needs</h1>
-          </motion.div>
-          <motion.div variants={heroItemVariants}>
-            <p className="mt-6 text-lg leading-8 text-cyan-100 sm:text-xl">Kolabee connects businesses with top-tier creators for product promotion, photoshoots, and referral programs. One simple platform. Shared data.</p>
-          </motion.div>
-          <motion.div variants={heroItemVariants} className="mt-10 flex items-center justify-center gap-x-6">
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href="/dashboard" className="group flex items-center gap-2 rounded-full bg-cyan-500 px-6 py-3.5 text-sm font-semibold text-white shadow-sm shadow-cyan-500/20 hover:bg-cyan-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 transition-all">
-                Post a Brief <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+
+          {/* H1 — two-beat reveal: line 1 then line 2 with gradient on second line */}
+          <h1 className="font-heading text-5xl font-bold tracking-tight text-white sm:text-7xl" style={{ textShadow: "0 0 80px rgba(34,211,238,0.15)" }}>
+            <motion.span
+              variants={heroItem(0.16)}
+              initial="hidden"
+              animate="visible"
+              className="block"
+            >
+              Everything a product
+            </motion.span>
+            <motion.span
+              variants={heroItem(0.27)}
+              initial="hidden"
+              animate="visible"
+              className="block"
+            >
+              {/* "launch needs" gets a subtle cyan gradient */}
+              <span
+                style={{
+                  background: "linear-gradient(95deg, #e0f7fa 0%, #67e8f9 45%, #22d3ee 100%)",
+                  WebkitBackgroundClip: "text",
+                  WebkitTextFillColor: "transparent",
+                  backgroundClip: "text",
+                }}
+              >
+                launch needs
+              </span>
+            </motion.span>
+          </h1>
+
+          {/* Subtext — animates after headline */}
+          <motion.p
+            variants={heroItem(0.40)}
+            initial="hidden"
+            animate="visible"
+            className="mt-6 text-lg leading-8 text-cyan-100/90 sm:text-xl"
+          >
+            Kolabee connects businesses with top-tier creators for product promotion,
+            photoshoots, and referral programs. One simple platform. Shared data.
+          </motion.p>
+
+          {/* CTAs — animate last */}
+          <motion.div
+            variants={heroItem(0.52)}
+            initial="hidden"
+            animate="visible"
+            className="mt-10 flex items-center justify-center gap-x-6"
+          >
+            {/* Primary button — glow on hover, arrow nudge */}
+            <motion.div
+              whileHover={{
+                scale: 1.03,
+                boxShadow: "0 0 28px 6px rgba(34,211,238,0.35), 0 4px 20px rgba(34,211,238,0.2)",
+              }}
+              whileTap={{ scale: 0.96 }}
+              transition={{ duration: 0.18, ease: EASE }}
+              style={{ borderRadius: "9999px" }}
+            >
+              <Link
+                href="/dashboard"
+                className="group flex items-center gap-2 rounded-full bg-cyan-500 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/30 hover:bg-cyan-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 transition-colors"
+              >
+                Post a Brief
+                <motion.span
+                  className="flex"
+                  variants={{ rest: { x: 0 }, hover: { x: 4 } }}
+                  initial="rest"
+                  whileHover="hover"
+                  transition={{ duration: 0.18, ease: EASE }}
+                >
+                  <ArrowRight className="h-4 w-4" />
+                </motion.span>
               </Link>
             </motion.div>
-            <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-              <Link href="/dashboard" className="text-sm font-semibold leading-6 text-cyan-100 hover:text-white transition-colors">
-                Join as a Creator <span aria-hidden="true">→</span>
+
+            {/* Secondary text link — arrow nudge + animated underline draw */}
+            <motion.div
+              initial="rest"
+              whileHover="hover"
+              animate="rest"
+              className="relative flex flex-col items-start"
+            >
+              <Link
+                href="/dashboard"
+                className="flex items-center gap-1.5 text-sm font-semibold leading-6 text-cyan-100 hover:text-white transition-colors"
+              >
+                Join as a Creator
+                <motion.span
+                  className="flex"
+                  variants={{ rest: { x: 0 }, hover: { x: 4 } }}
+                  transition={{ duration: 0.18, ease: EASE }}
+                >
+                  <ArrowRight className="h-4 w-4" />
+                </motion.span>
               </Link>
+              {/* Underline draws left-to-right on hover */}
+              <motion.span
+                className="absolute -bottom-0.5 left-0 h-px bg-cyan-300"
+                variants={{ rest: { scaleX: 0, originX: 0 }, hover: { scaleX: 1, originX: 0 } }}
+                transition={{ duration: 0.25, ease: EASE }}
+                style={{ width: "100%" }}
+              />
             </motion.div>
           </motion.div>
-        </motion.div>
+        </div>
+
+        {/* Scroll Indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 cursor-pointer opacity-70 hover:opacity-100 transition-opacity z-10">
+          <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300">Scroll Down</span>
+          <motion.button
+            animate={{ y: [0, 6, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+            className="flex h-8 w-8 items-center justify-center rounded-full bg-cyan-900/40 text-cyan-400 ring-1 ring-cyan-800 backdrop-blur-sm"
+            onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
+          >
+            <ChevronDown className="h-4 w-4" />
+          </motion.button>
+        </div>
       </section>
 
       {/* 2. Service Categories Section */}
-      <section className="px-6 py-24 sm:py-32 lg:px-8">
+      <section id="features" className="px-6 py-24 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: customEasing }} className="mb-16 text-center">
             <h2 className="font-heading text-3xl font-bold tracking-tight text-cyan-950 sm:text-4xl">One platform. Four ways to grow.</h2>

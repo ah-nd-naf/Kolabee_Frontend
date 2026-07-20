@@ -84,6 +84,35 @@ function DropdownMenu({ items, isOpen }: { items: typeof productLinks; isOpen: b
   );
 }
 
+/* ─── Animated underline nav link ─── */
+function NavLinkWithUnderline({
+  href,
+  children,
+  className,
+}: {
+  href: string;
+  children: React.ReactNode;
+  className?: string;
+}) {
+  return (
+    <motion.div
+      initial="rest"
+      whileHover="hover"
+      animate="rest"
+      className="relative inline-flex flex-col items-center"
+    >
+      <Link href={href} className={className}>
+        {children}
+      </Link>
+      <motion.span
+        className="absolute -bottom-0.5 left-2 right-2 h-px bg-cyan-400/80 origin-left"
+        variants={{ rest: { scaleX: 0 }, hover: { scaleX: 1 } }}
+        transition={{ duration: 0.25, ease: EASE }}
+      />
+    </motion.div>
+  );
+}
+
 /* ─── Mobile menu ─── */
 function MobileMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   return (
@@ -225,38 +254,51 @@ export function Navbar() {
               </span>
             </Link>
 
-            {/* ── Desktop Nav ── */}
-            <nav className="hidden lg:flex items-center gap-1">
+            {/* ── Desktop Nav — absolutely centered in the bar ── */}
+            <nav className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-1">
               {navLinks.map((link) => (
                 <div key={link.label} className="relative">
                   {link.href ? (
-                    <Link
+                    <NavLinkWithUnderline
                       href={link.href}
-                      className={`flex items-center gap-1 rounded-xl px-4 py-2 text-sm font-semibold transition-colors duration-200 hover:bg-white/10 dark:hover:bg-stone-700/50 ${
+                      className={`flex items-center gap-1 rounded-xl px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
                         scrolled
-                          ? "text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-white"
-                          : "text-white/80 hover:text-white hover:bg-white/10"
+                          ? "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white"
+                          : "text-white/80 hover:text-white"
                       }`}
                     >
                       {link.label}
-                    </Link>
+                    </NavLinkWithUnderline>
                   ) : (
-                    <button
-                      onClick={() => toggleDropdown(link.label)}
-                      className={`flex items-center gap-1 rounded-xl px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
-                        scrolled
-                          ? "text-stone-600 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-800 hover:text-stone-900 dark:hover:text-white"
-                          : "text-white/80 hover:text-white hover:bg-white/10"
-                      } ${openDropdown === link.label ? (scrolled ? "bg-stone-100 dark:bg-stone-800 text-stone-900 dark:text-white" : "bg-white/10 text-white") : ""}`}
+                    <motion.div
+                      initial="rest"
+                      whileHover="hover"
+                      animate="rest"
+                      className="relative inline-flex flex-col items-center"
                     >
-                      {link.label}
-                      <motion.span
-                        animate={{ rotate: openDropdown === link.label ? 180 : 0 }}
-                        transition={{ duration: 0.2, ease: EASE }}
+                      <button
+                        onClick={() => toggleDropdown(link.label)}
+                        className={`flex items-center gap-1 rounded-xl px-4 py-2 text-sm font-semibold transition-colors duration-200 ${
+                          scrolled
+                            ? "text-stone-600 dark:text-stone-300 hover:text-stone-900 dark:hover:text-white"
+                            : "text-white/80 hover:text-white"
+                        } ${openDropdown === link.label ? (scrolled ? "text-stone-900 dark:text-white" : "text-white") : ""}`}
                       >
-                        <ChevronDown className="h-3.5 w-3.5" />
-                      </motion.span>
-                    </button>
+                        {link.label}
+                        <motion.span
+                          animate={{ rotate: openDropdown === link.label ? 180 : 0 }}
+                          transition={{ duration: 0.2, ease: EASE }}
+                        >
+                          <ChevronDown className="h-3.5 w-3.5" />
+                        </motion.span>
+                      </button>
+                      {/* Underline on dropdown buttons too */}
+                      <motion.span
+                        className="absolute -bottom-0.5 left-2 right-2 h-px bg-cyan-400/80 origin-left"
+                        variants={{ rest: { scaleX: 0 }, hover: { scaleX: 1 } }}
+                        transition={{ duration: 0.25, ease: EASE }}
+                      />
+                    </motion.div>
                   )}
 
                   {link.dropdown && (

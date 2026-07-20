@@ -121,10 +121,10 @@ export function ThemeToggleSimple() {
         {isDark ? (
           <motion.span
             key="moon"
-            initial={{ y: 16, opacity: 0, rotate: -30 }}
-            animate={{ y: 0, opacity: 1, rotate: 0 }}
-            exit={{ y: -16, opacity: 0, rotate: 30 }}
-            transition={{ duration: 0.28, ease: EASE }}
+            initial={{ y: 20, opacity: 0, rotate: -90, scale: 0.6 }}
+            animate={{ y: 0, opacity: 1, rotate: 0, scale: 1 }}
+            exit={{ y: -20, opacity: 0, rotate: 90, scale: 0.6 }}
+            transition={{ duration: 0.32, ease: EASE }}
             className="absolute"
           >
             <Moon className="h-4 w-4" />
@@ -132,10 +132,10 @@ export function ThemeToggleSimple() {
         ) : (
           <motion.span
             key="sun"
-            initial={{ y: 16, opacity: 0, rotate: 30 }}
-            animate={{ y: 0, opacity: 1, rotate: 0 }}
-            exit={{ y: -16, opacity: 0, rotate: -30 }}
-            transition={{ duration: 0.28, ease: EASE }}
+            initial={{ y: 20, opacity: 0, rotate: 180, scale: 0.6 }}
+            animate={{ y: 0, opacity: 1, rotate: 0, scale: 1 }}
+            exit={{ y: -20, opacity: 0, rotate: -180, scale: 0.6 }}
+            transition={{ duration: 0.32, ease: EASE }}
             className="absolute"
           >
             <Sun className="h-4 w-4" />

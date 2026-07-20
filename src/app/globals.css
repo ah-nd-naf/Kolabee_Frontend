@@ -319,3 +319,18 @@ h1, h2, h3, h4, h5, h6 {
 /* Landing page bg-white sections in dark */
 .dark main.min-h-screen  { background-color: #0a0f14 !important; }
 .dark section.bg-white   { background-color: #0f1923 !important; }
+
+/* ── Grain texture frame-shift animation (hero noise overlay) ── */
+/* Steps through 8 "frames" by shifting the tiled background position,
+   creating a subtle film-grain flicker without repainting the SVG.   */
+@keyframes grain-shift {
+  0%   { background-position:   0%   0%; }
+  12%  { background-position:  20%  35%; }
+  25%  { background-position: -15%  60%; }
+  37%  { background-position:  40% -10%; }
+  50%  { background-position: -30%  25%; }
+  62%  { background-position:  10%  80%; }
+  75%  { background-position: -20% -30%; }
+  87%  { background-position:  55%  45%; }
+  100% { background-position:   0%   0%; }
+}
