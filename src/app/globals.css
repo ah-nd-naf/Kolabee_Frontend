@@ -63,6 +63,8 @@
   /* ── Transitions ── */
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  /* PRIMARY easing — [0.16, 1, 0.3, 1] — apply this to ALL animations */
+  --ease-snap:   cubic-bezier(0.16, 1, 0.3, 1);
   /* --font-sans is injected by next/font at runtime on the <html> element */
   --color-sidebar-ring:        var(--sidebar-ring);
   --color-sidebar-border:        var(--sidebar-border);
@@ -95,21 +97,34 @@
   --radius-4xl:        calc(var(--radius) * 2.6);
 }
 
-/* ── Dark mode overrides ── */
-@media (prefers-color-scheme: dark) {
-  @theme inline {
-    --color-background: #0c0a09;
-    --color-surface:    #1c1917;
-    --color-foreground: #fafaf9;
-    --color-muted:      #a8a29e;
-    --color-border:     #292524;
-  }
+/* ── Dark mode: override Kolabee design tokens via .dark class ──
+   next-themes applies .dark to <html>; the custom-variant above
+   then makes dark: Tailwind utilities work throughout the app.
+────────────────────────────────────────────────── */
+.dark {
+  color-scheme: dark;
+
+  /* Kolabee semantic surface tokens */
+  --color-background: #0a0f14;   /* very deep navy–black     */
+  --color-surface:    #0f1923;   /* dark card surface         */
+  --color-foreground: #f0f9ff;   /* near–white text          */
+  --color-muted:      #64748b;   /* slate–500               */
+  --color-border:     rgba(255, 255, 255, 0.08);
 }
 
 /* ── Base reset & typography ── */
 *, *::before, *::after {
   box-sizing: border-box;
   border-color: var(--color-border);
+  /* Smooth color transitions on theme switch */
+  transition-property: background-color, border-color, color, fill, stroke;
+  transition-duration: 250ms;
+  transition-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Exclude animated elements from the blanket transition */
+[class*="motion-"], [data-motion], canvas {
+  transition: none !important;
 }
 
 html {
@@ -131,14 +146,53 @@ h1, h2, h3, h4, h5, h6 {
   line-height: 1.2;
 }
 
-/* ── Utility: dark-section background ── */
+/* ── Utility: dark-section background (gradient mesh + noise) ── */
 .bg-dark-section {
   background-color: var(--color-dark-bg);
+  /* Multi-stop radial gradient mesh */
+  background-image:
+    radial-gradient(ellipse 80% 60% at 10% 0%, rgba(6, 182, 212, 0.14) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 50% at 90% 100%, rgba(8, 145, 178, 0.10) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 40% at 50% 50%, rgba(6, 182, 212, 0.05) 0%, transparent 100%),
+    /* SVG noise texture overlay */
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  background-size: auto, auto, auto, 200px 200px;
 }
 
 /* ── Utility: cyan glow ── */
 .glow-primary {
   box-shadow: var(--shadow-glow);
+}
+
+/* ── Skeleton shimmer animation ── */
+@keyframes skeleton-wave {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+
+.skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #e7e5e4 0%,
+    #f5f5f4 40%,
+    #e7e5e4 80%,
+    #e7e5e4 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.6s ease-in-out infinite;
+}
+
+/* Dark mode skeleton shimmer */
+.dark .skeleton-shimmer {
+  background: linear-gradient(
+    90deg,
+    #1e293b 0%,
+    #273344 40%,
+    #1e293b 80%,
+    #1e293b 100%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-wave 1.6s ease-in-out infinite;
 }
 
 :root {
@@ -221,3 +275,47 @@ h1, h2, h3, h4, h5, h6 {
     @apply font-sans;
   }
 }
+
+/* ── Dark mode overrides for pages that use Tailwind hardcoded classes ──
+   Since some pages use bg-white/bg-stone-50/border-stone-200, etc. directly,
+   we patch these with .dark parent overrides.
+─────────────────────────────────────────────────── */
+
+/* Global surface patches */
+.dark .bg-white          { background-color: #0f1923 !important; }
+.dark .bg-stone-50       { background-color: #0a0f14 !important; }
+.dark .bg-stone-100      { background-color: #111827 !important; }
+
+/* Border patches */
+.dark .border-stone-200  { border-color: rgba(255,255,255,0.08) !important; }
+.dark .border-stone-100  { border-color: rgba(255,255,255,0.05) !important; }
+
+/* Text patches */
+.dark .text-stone-900    { color: #f0f9ff !important; }
+.dark .text-stone-800    { color: #e2f3ff !important; }
+.dark .text-stone-700    { color: #cbd5e1 !important; }
+.dark .text-stone-600    { color: #94a3b8 !important; }
+.dark .text-stone-500    { color: #64748b !important; }
+.dark .text-stone-400    { color: #4b5563 !important; }
+.dark .text-cyan-950     { color: #e0f2fe !important; }
+
+/* Dashboard header dark */
+.dark header.bg-white    {
+  background-color: #0f1923 !important;
+  border-color: rgba(255,255,255,0.07) !important;
+}
+
+/* Dashboard main area */
+.dark main { background-color: #0a0f14; }
+
+/* Card shadows in dark */
+.dark .shadow-sm         { box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.4); }
+.dark .shadow-md         { box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.5); }
+
+/* Hover effects in dark */
+.dark .hover\:bg-stone-50:hover  { background-color: rgba(255,255,255,0.04) !important; }
+.dark .hover\:bg-stone-100:hover { background-color: rgba(255,255,255,0.07) !important; }
+
+/* Landing page bg-white sections in dark */
+.dark main.min-h-screen  { background-color: #0a0f14 !important; }
+.dark section.bg-white   { background-color: #0f1923 !important; }

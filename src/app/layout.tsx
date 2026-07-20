@@ -2,11 +2,10 @@ import type { Metadata } from "next";
 import { Space_Grotesk, DM_Sans, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
+import { ThemeProvider } from "@/components/ui/theme-provider";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
-
-/* ── Google Fonts ── */
 const spaceGrotesk = Space_Grotesk({
   subsets: ["latin"],
   variable: "--font-heading",
@@ -21,7 +20,6 @@ const dmSans = DM_Sans({
   weight: ["300", "400", "500", "600", "700"],
 });
 
-/* ── SEO metadata ── */
 export const metadata: Metadata = {
   title: {
     default: "Kolabee — Creator & Partner Collaboration Platform",
@@ -50,7 +48,16 @@ export default function RootLayout({
       className={cn(spaceGrotesk.variable, dmSans.variable, "font-sans", geist.variable)}
       suppressHydrationWarning
     >
-      <body className="antialiased">{children}</body>
+      <body className="antialiased">
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange={false}
+        >
+          {children}
+        </ThemeProvider>
+      </body>
     </html>
   );
 }

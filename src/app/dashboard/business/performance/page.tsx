@@ -80,26 +80,26 @@ export default function PerformancePage() {
       <div className="rounded-2xl border border-stone-200 bg-white shadow-sm overflow-hidden">
         
         {/* Table Header */}
-        <div className="grid grid-cols-12 gap-4 border-b border-stone-200 bg-stone-50/50 p-4 text-xs font-semibold uppercase tracking-wider text-stone-500">
+        <div className="grid grid-cols-12 gap-4 border-b border-stone-200 dark:border-white/[0.07] bg-stone-50/50 dark:bg-white/[0.03] p-4 text-xs font-semibold uppercase tracking-wider text-stone-500 dark:text-slate-300">
           <div className="col-span-3">Partner</div>
           <div className="col-span-2">Tier & Rate</div>
           
           <div 
-            className="col-span-2 flex cursor-pointer items-center gap-1 hover:text-cyan-700 transition-colors"
+            className="col-span-2 flex cursor-pointer items-center gap-1 hover:text-cyan-700 dark:hover:text-cyan-400 transition-colors"
             onClick={() => handleSort("orders")}
           >
             Orders & Conv <ArrowUpDown className="h-3 w-3" />
           </div>
           
           <div 
-            className="col-span-2 flex cursor-pointer items-center gap-1 hover:text-cyan-700 transition-colors"
+            className="col-span-2 flex cursor-pointer items-center gap-1 hover:text-cyan-700 dark:hover:text-cyan-400 transition-colors"
             onClick={() => handleSort("commissionPaid")}
           >
             Commission Paid <ArrowUpDown className="h-3 w-3" />
           </div>
           
           <div 
-            className="col-span-2 flex cursor-pointer items-center gap-1 hover:text-cyan-700 transition-colors"
+            className="col-span-2 flex cursor-pointer items-center gap-1 hover:text-cyan-700 dark:hover:text-cyan-400 transition-colors"
             onClick={() => handleSort("trendValue")}
           >
             30d Trend <ArrowUpDown className="h-3 w-3" />

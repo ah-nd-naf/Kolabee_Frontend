@@ -31,12 +31,15 @@ import {
   BadgeCheck,
 } from "lucide-react";
 import Link from "next/link";
+import { CountUp } from "@/components/ui/count-up";
+import { Navbar } from "@/components/ui/navbar";
 
 export default function LandingPage() {
   const [activePersona, setActivePersona] = useState<"business" | "creator">("business");
 
   // Consistent easing curve applied across all animations for a very smooth feel
-  const customEasing = [0.16, 1, 0.3, 1];
+  // Cast as Bezier tuple so framer-motion's TypeScript types accept it
+  const customEasing = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
   // --- Hero Animations ---
   const heroContainerVariants = {
@@ -82,10 +85,11 @@ export default function LandingPage() {
   };
 
   return (
-    <main className="min-h-screen bg-stone-50 text-stone-900">
+    <main className="min-h-screen bg-stone-50 dark:bg-[#0a0f14] text-stone-900 dark:text-slate-100">
+      <Navbar />
       
       {/* 1. Hero Section */}
-      <section className="relative overflow-hidden bg-cyan-950 px-6 pt-32 pb-40 text-center sm:pt-40 sm:pb-48 lg:px-8">
+      <section className="relative overflow-hidden bg-dark-section px-6 pt-32 pb-40 text-center sm:pt-40 sm:pb-48 lg:px-8">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(6,182,212,0.15),rgba(255,255,255,0))]" />
         <motion.div className="mx-auto max-w-3xl" variants={heroContainerVariants} initial="hidden" animate="visible">
           <motion.div variants={heroItemVariants} className="mb-8 flex justify-center">
@@ -140,7 +144,7 @@ export default function LandingPage() {
       </section>
 
       {/* 3. How It Works Section */}
-      <section className="bg-white px-6 py-24 sm:py-32 lg:px-8">
+      <section className="bg-white dark:bg-[#0f1923] px-6 py-24 sm:py-32 lg:px-8">
         <div className="mx-auto max-w-7xl">
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: customEasing }} className="mb-16 text-center">
             <h2 className="font-heading text-3xl font-bold tracking-tight text-cyan-950 sm:text-4xl">How Kolabee works</h2>
@@ -148,19 +152,19 @@ export default function LandingPage() {
             
             {/* Interactive Toggle */}
             <div className="mt-8 flex justify-center">
-              <div className="relative flex space-x-1 rounded-full bg-stone-100 p-1 ring-1 ring-stone-200">
+              <div className="relative flex space-x-1 rounded-full bg-stone-100 dark:bg-white/[0.05] p-1 ring-1 ring-stone-200 dark:ring-white/[0.05]">
                 {(["business", "creator"] as const).map((persona) => (
                   <button
                     key={persona}
                     onClick={() => setActivePersona(persona)}
                     className={`relative rounded-full px-6 py-2.5 text-sm font-semibold outline-none transition-colors ${
-                      activePersona === persona ? "text-cyan-900" : "text-stone-500 hover:text-stone-700"
+                      activePersona === persona ? "text-cyan-900 dark:text-cyan-50" : "text-stone-500 dark:text-stone-400 hover:text-stone-700 dark:hover:text-stone-300"
                     }`}
                   >
                     {activePersona === persona && (
                       <motion.div
                         layoutId="active-pill"
-                        className="absolute inset-0 rounded-full bg-white shadow-sm ring-1 ring-stone-200/50"
+                        className="absolute inset-0 rounded-full bg-white dark:bg-cyan-900/60 shadow-sm ring-1 ring-stone-200/50 dark:ring-cyan-800/50"
                         transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
                       />
                     )}
@@ -186,12 +190,12 @@ export default function LandingPage() {
                   const Icon = step.icon;
                   return (
                     <div key={step.step} className="relative flex flex-col items-center text-center">
-                      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-cyan-50 text-cyan-600 ring-8 ring-white">
+                      <div className="relative z-10 mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-cyan-50 dark:bg-cyan-950/40 text-cyan-600 dark:text-cyan-400 ring-8 ring-white dark:ring-[#0f1923]">
                         <Icon className="h-7 w-7" />
                       </div>
                       {/* Connecting Line */}
                       {index !== flowData[activePersona].length - 1 && (
-                        <div className="absolute top-8 left-[60%] hidden h-[2px] w-[80%] bg-stone-100 md:block" />
+                        <div className="absolute top-8 left-[60%] hidden h-[2px] w-[80%] bg-stone-200/60 dark:bg-white/10 md:block" />
                       )}
                       <h3 className="font-heading text-xl font-bold text-cyan-950">
                         <span className="mb-2 block text-sm font-medium text-cyan-600">Step {step.step}</span>
@@ -208,7 +212,7 @@ export default function LandingPage() {
       </section>
 
       {/* 4. Pricing Section */}
-      <section className="relative overflow-hidden bg-cyan-950 px-6 py-24 sm:py-32 lg:px-8 text-center z-0">
+      <section id="pricing" className="relative overflow-hidden bg-dark-section px-6 py-24 sm:py-32 lg:px-8 text-center z-0">
         <div className="absolute top-1/2 left-1/2 -z-10 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/20 blur-[120px]" />
 
         <div className="mx-auto max-w-4xl relative z-10">
@@ -363,7 +367,8 @@ export default function LandingPage() {
               {/* Card 1: creator stat */}
               <motion.div
                 whileHover={{ y: -5, scale: 1.01 }}
-                transition={{ type: 'spring', stiffness: 300 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: 'spring', stiffness: 300, ease: customEasing }}
                 className="group relative overflow-hidden rounded-2xl bg-white p-6 shadow-md shadow-stone-200/80 ring-1 ring-stone-200"
               >
                 <div className="absolute -right-6 -top-6 h-28 w-28 rounded-full bg-cyan-100/60 blur-2xl transition-all group-hover:bg-cyan-200/60" />
@@ -372,7 +377,9 @@ export default function LandingPage() {
                     <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600 ring-1 ring-cyan-100">
                       <Users2 className="h-5 w-5" />
                     </div>
-                    <p className="font-heading text-3xl font-extrabold text-cyan-950">12,000+</p>
+                    <p className="font-heading text-3xl font-extrabold text-cyan-950">
+                      <CountUp to={12000} duration={1600} formatter={(n) => `${Math.round(n).toLocaleString()}+`} />
+                    </p>
                     <p className="mt-1 text-sm text-stone-500">Vetted creators across all niches</p>
                   </div>
                   <div className="flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-600 ring-1 ring-emerald-200">
@@ -384,7 +391,8 @@ export default function LandingPage() {
               {/* Card 2: brand stat — offset right for depth */}
               <motion.div
                 whileHover={{ y: -5, scale: 1.01 }}
-                transition={{ type: 'spring', stiffness: 300 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ type: 'spring', stiffness: 300, ease: customEasing }}
                 className="group relative ml-6 overflow-hidden rounded-2xl bg-white p-6 shadow-md shadow-stone-200/80 ring-1 ring-stone-200"
               >
                 <div className="absolute -left-6 -bottom-6 h-28 w-28 rounded-full bg-stone-100/80 blur-2xl transition-all group-hover:bg-cyan-100/60" />
@@ -393,7 +401,9 @@ export default function LandingPage() {
                     <div className="mb-3 flex h-10 w-10 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600 ring-1 ring-cyan-100">
                       <Building2 className="h-5 w-5" />
                     </div>
-                    <p className="font-heading text-3xl font-extrabold text-cyan-950">2,400+</p>
+                    <p className="font-heading text-3xl font-extrabold text-cyan-950">
+                      <CountUp to={2400} duration={1400} delay={100} formatter={(n) => `${Math.round(n).toLocaleString()}+`} />
+                    </p>
                     <p className="mt-1 text-sm text-stone-500">Brands running active campaigns</p>
                   </div>
                   <div className="flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-600 ring-1 ring-emerald-200">
@@ -443,7 +453,7 @@ export default function LandingPage() {
       {/* ────────────────────────────────────────
           FOOTER
       ──────────────────────────────────────── */}
-      <footer className="relative overflow-hidden bg-cyan-950">
+      <footer className="relative overflow-hidden bg-dark-section">
 
         {/* Pulsing shimmer border */}
         <motion.div
@@ -554,7 +564,7 @@ export default function LandingPage() {
                       <li key={label}>
                         <Link
                           href={hrefs[i]}
-                          className="group flex items-center gap-2 text-sm text-stone-400 transition-colors duration-200 hover:text-white"
+                          className="group flex items-center gap-2 text-sm text-white/60 transition-colors duration-200 hover:text-white"
                         >
                           <span className="h-px w-0 shrink-0 rounded-full bg-cyan-500 transition-all duration-300 ease-out group-hover:w-3" />
                           {label}
@@ -576,20 +586,27 @@ export default function LandingPage() {
             className="mt-16 grid grid-cols-2 gap-px overflow-hidden rounded-2xl bg-cyan-800/30 ring-1 ring-cyan-800/40 sm:grid-cols-4"
           >
             {([
-              { label: 'Creators',              value: '12,000+' },
-              { label: 'Brands',                value: '2,400+'  },
-              { label: 'Campaigns Delivered',   value: '38,000+' },
-              { label: 'Paid Out to Creators',  value: '$4.2M+'  },
-            ]).map(({ label, value }, i) => (
+              { label: 'Creators',             rawValue: 12000,  formatter: (n: number) => `${Math.round(n / 1000 * 10) / 10}K+`, delay: 0 },
+              { label: 'Brands',               rawValue: 2400,   formatter: (n: number) => `${Math.round(n).toLocaleString()}+`, delay: 80 },
+              { label: 'Campaigns Delivered',  rawValue: 38000,  formatter: (n: number) => `${Math.round(n / 1000 * 10) / 10}K+`, delay: 160 },
+              { label: 'Paid Out to Creators', rawValue: 4.2,    formatter: (n: number) => `$${n.toFixed(1)}M+`, delay: 240 },
+            ]).map(({ label, rawValue, formatter, delay }) => (
               <motion.div
                 key={label}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
                 viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: i * 0.1 }}
+                transition={{ duration: 0.5, delay: delay / 1000 }}
                 className="flex flex-col items-center justify-center bg-cyan-950 px-6 py-10 text-center"
               >
-                <span className="font-heading text-3xl font-extrabold text-white">{value}</span>
+                <span className="font-heading text-3xl font-extrabold text-white">
+                  <CountUp
+                    to={rawValue}
+                    duration={1500}
+                    delay={delay + 200}
+                    formatter={formatter}
+                  />
+                </span>
                 <span className="mt-1.5 text-xs text-cyan-500">{label}</span>
               </motion.div>
             ))}
