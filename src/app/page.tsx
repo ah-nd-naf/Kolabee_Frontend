@@ -41,6 +41,10 @@ import Link from "next/link";
 import { CountUp } from "@/components/ui/count-up";
 import { Navbar } from "@/components/ui/navbar";
 import { ParticleField } from "@/components/ui/particle-field";
+import { DecodeText } from "@/components/ui/decode-text";
+import { FocusText } from "@/components/ui/focus-text";
+
+// ── Components ──
 
 /* ───────────────────────────────────────────────────
    ANIMATED AURORA BACKGROUND
@@ -350,7 +354,7 @@ export default function LandingPage() {
               animate="visible"
               className="block"
             >
-              Everything a product
+              <FocusText text="Everything a product" delayMs={200} staggerMs={40} />
             </motion.span>
             <motion.span
               variants={heroItem(0.27)}
@@ -358,17 +362,19 @@ export default function LandingPage() {
               animate="visible"
               className="block"
             >
-              {/* "launch needs" gets a subtle cyan gradient */}
-              <span
+              {/* "launch needs" gets a subtle cyan gradient and decode reveal */}
+              <DecodeText
+                text="launch needs"
+                underlineWord="needs"
+                delayMs={1200}
+                className="inline-block"
                 style={{
                   background: "linear-gradient(95deg, #e0f7fa 0%, #67e8f9 45%, #22d3ee 100%)",
                   WebkitBackgroundClip: "text",
                   WebkitTextFillColor: "transparent",
                   backgroundClip: "text",
                 }}
-              >
-                launch needs
-              </span>
+              />
             </motion.span>
           </h1>
 
