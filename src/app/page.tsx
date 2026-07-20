@@ -543,16 +543,28 @@ export default function LandingPage() {
             <AnimatePresence mode="wait">
               <motion.div
                 key={activePersona}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -15 }}
-                transition={{ duration: 0.4, ease: customEasing }}
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1, transition: { staggerChildren: 0.4 } },
+                  exit: { opacity: 0, y: -15, transition: { duration: 0.3 } }
+                }}
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                exit="exit"
                 className="grid grid-cols-1 gap-8 md:grid-cols-3"
               >
                 {flowData[activePersona].map((step, index) => {
                   const Icon = step.icon;
                   return (
-                    <div key={step.step} className="premium-glass relative flex flex-col items-center text-center p-8 rounded-3xl transition-all">
+                    <motion.div 
+                      key={step.step} 
+                      variants={{
+                        hidden: { opacity: 0, x: -40 },
+                        visible: { opacity: 1, x: 0, transition: { duration: 1.2, ease: customEasing } }
+                      }}
+                      className="premium-glass relative flex flex-col items-center text-center p-8 rounded-3xl transition-all"
+                    >
                       <div className="relative z-10 mb-6 flex h-16 w-16 items-center justify-center rounded-full bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 ring-8 ring-transparent">
                         <Icon className="h-7 w-7" />
                       </div>
@@ -571,7 +583,7 @@ export default function LandingPage() {
                         {step.title}
                       </h3>
                       <p className="mt-3 text-stone-600">{step.description}</p>
-                    </div>
+                    </motion.div>
                   );
                 })}
               </motion.div>
