@@ -18,6 +18,7 @@ import {
   CheckCircle2
 } from "lucide-react";
 import Link from "next/link";
+import { useTheme } from "next-themes";
 import { CountUp } from "@/components/ui/count-up";
 import { StatCardSkeleton } from "@/components/ui/skeleton";
 
@@ -65,6 +66,8 @@ const activeDeal = {
 
 export default function DashboardOverview() {
   const [isLoading, setIsLoading] = useState(true);
+  const { resolvedTheme } = useTheme();
+  const isDark = resolvedTheme === "dark";
 
   useEffect(() => {
     const t = setTimeout(() => setIsLoading(false), 700);
@@ -81,8 +84,8 @@ export default function DashboardOverview() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease: EASE }}
         >
-          <h1 className="font-heading text-3xl font-bold text-cyan-950">Overview</h1>
-          <p className="mt-1 text-sm text-stone-500">
+          <h1 className="font-heading text-3xl font-bold text-cyan-950 dark:text-white">Overview</h1>
+          <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
             Your performance snapshot for today.
           </p>
         </motion.div>
@@ -116,18 +119,25 @@ export default function DashboardOverview() {
               <motion.div
                 key={stat.label}
                 variants={cardVariants}
-                whileHover={{ y: -4, boxShadow: "0 12px 24px -4px rgb(8 145 178 / 0.10)" }}
+                whileHover={{ y: -3 }}    
                 transition={{ duration: 0.22, ease: EASE }}
-                className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+                className="stat-card-glass rounded-2xl p-6"
+                style={{
+                  background: isDark ? "rgba(18, 18, 18, 0.4)" : "rgba(255,255,255,0.15)",
+                  border: isDark ? "1px solid rgba(255,255,255,0.15)" : "1px solid rgba(255,255,255,0.4)",
+                  boxShadow: " 0 8px 32px 0 rgba(0, 0, 0, 0.37)",
+                  backdropFilter: "blur(40px) saturate(160%)",
+                  WebkitBackdropFilter: "blur(40px) saturate(160%)",
+                } as React.CSSProperties}
               >
                 <div className="flex items-center justify-between">
-                  <span className="text-sm font-medium text-stone-500">{stat.label}</span>
+                  <span className="text-sm font-medium text-stone-500 dark:text-stone-400">{stat.label}</span>
                   <div className={`flex h-10 w-10 items-center justify-center rounded-full ${isLive ? "bg-red-50" : "bg-cyan-50"} ${isLive ? "text-red-500" : "text-cyan-600"}`}>
                     <Icon className="h-5 w-5" />
                   </div>
                 </div>
                 <div className="mt-4 flex items-baseline gap-2">
-                  <span className="text-3xl font-bold text-cyan-950">
+                  <span className="text-3xl font-bold text-cyan-950 dark:text-white">
                     <CountUp
                       to={stat.value}
                       duration={1300}
@@ -136,7 +146,7 @@ export default function DashboardOverview() {
                     />
                   </span>
                   {isLive ? (
-                    <span className="flex items-center gap-1 text-sm font-medium text-red-500">
+                    <span className="flex items-center gap-1 text-sm font-medium text-red-500 dark:text-red-400">
                       <motion.span
                         animate={{ opacity: [1, 0.3, 1] }}
                         transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}

@@ -246,8 +246,17 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
   );
 
   return (
-    <div className="h-screen flex w-full bg-stone-50 overflow-hidden text-stone-900">
-      <CommandPalette />
+    <div className="h-screen flex w-full bg-stone-50 dark:bg-[#080c10] overflow-hidden text-stone-900 relative">
+      
+      {/* Ambient Background Gradient for Glassmorphism */}
+      <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+        <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] rounded-full bg-cyan-400/10 dark:bg-cyan-500/10 blur-[120px]" />
+        <div className="absolute top-[20%] -right-[10%] w-[40%] h-[60%] rounded-full bg-blue-400/10 dark:bg-blue-600/10 blur-[120px]" />
+        <div className="absolute -bottom-[20%] left-[20%] w-[60%] h-[50%] rounded-full bg-purple-400/10 dark:bg-purple-600/10 blur-[120px]" />
+      </div>
+
+      <div className="z-10 flex w-full">
+        <CommandPalette />
       <BriefWizard isOpen={isBriefWizardOpen} onClose={() => setIsBriefWizardOpen(false)} />
 
       {/* Desktop sidebar */}
@@ -313,11 +322,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       </AnimatePresence>
 
       {/* Main content area */}
-      <main className="flex-1 lg:pl-72 flex flex-col h-screen overflow-hidden">
-
-        {/* Header */}
-        <header className="hidden lg:flex h-16 shrink-0 items-center justify-between border-b border-stone-200 bg-white px-8 shadow-sm">
-          <h1 className="font-heading text-xl font-semibold text-cyan-950 capitalize">
+      <div className="flex-1 lg:pl-72 flex flex-col h-screen relative z-10">
+        
+        <header className="sticky top-0 z-20 flex shrink-0 items-center justify-between border-b border-stone-200/50 dark:border-white/5 bg-white/60 dark:bg-[#0a0f14]/60 backdrop-blur-xl px-4 py-3 sm:gap-x-6 sm:px-6 lg:px-8">
+          <h1 className="font-heading text-xl font-semibold text-cyan-950 capitalize dark:text-white">
             {pathname === '/dashboard' ? 'Overview' : pathname.split('/').pop()}
           </h1>
 
@@ -336,10 +344,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                   className="flex items-center gap-2 rounded-full bg-cyan-600 px-4 py-1.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 transition-colors"
                 >
                   <Plus className="h-4 w-4" />
-                  Post Brief
+                  <span className="hidden sm:inline">Post Brief</span>
                 </motion.button>
               )}
             </AnimatePresence>
+
+            <div className="hidden h-6 w-px bg-stone-200 sm:block" />
 
             <motion.button
               onClick={triggerCommandPalette}
@@ -371,7 +381,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </header>
 
         {/* Page content */}
-        <div className="flex-1 overflow-y-auto mt-16 lg:mt-0 p-4 sm:p-6 lg:p-8">
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <AnimatePresence mode="wait">
             <motion.div
               key={pathname}
@@ -385,7 +395,8 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             </motion.div>
           </AnimatePresence>
         </div>
-      </main>
+      </div>
+      </div>
     </div>
   );
 }
