@@ -163,23 +163,23 @@ export default function DashboardOverview() {
           className="rounded-2xl border border-stone-200 bg-white shadow-sm overflow-hidden"
         >
           {/* Section Header */}
-          <div className="border-b border-stone-100 bg-stone-50/50 px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="border-b border-stone-100 dark:border-white/[0.05] bg-stone-50/50 dark:bg-white/[0.02] px-6 py-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h2 className="font-heading text-lg font-bold text-cyan-950 flex items-center gap-2">
+              <h2 className="font-heading text-lg font-bold text-cyan-950 dark:text-white flex items-center gap-2">
                 Active Deal Tracker
-                <span className="inline-flex items-center rounded-full bg-cyan-100 px-2.5 py-0.5 text-xs font-semibold text-cyan-800">
+                <span className="inline-flex items-center rounded-full bg-cyan-100 dark:bg-cyan-900/40 px-2.5 py-0.5 text-xs font-semibold text-cyan-800 dark:text-cyan-300">
                   Action Required
                 </span>
               </h2>
-              <p className="text-sm text-stone-500 mt-1">
-                {activeDeal.campaign} • <span className="font-medium text-stone-700">{activeDeal.partner}</span>
+              <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
+                {activeDeal.campaign} • <span className="font-medium text-stone-700 dark:text-stone-300">{activeDeal.partner}</span>
               </p>
             </div>
-            <div className="flex items-center gap-2 rounded-lg bg-white px-4 py-2 ring-1 ring-stone-200 shadow-sm">
-              <ShieldCheck className="h-4 w-4 text-green-600" />
+            <div className="flex items-center gap-2 rounded-lg bg-white dark:bg-white/[0.03] px-4 py-2 ring-1 ring-stone-200 dark:ring-white/[0.07] shadow-sm">
+              <ShieldCheck className="h-4 w-4 text-green-600 dark:text-green-500" />
               <div className="flex flex-col">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 leading-none">Escrow Secured</span>
-                <span className="text-sm font-bold text-cyan-950 leading-tight">{activeDeal.escrowAmount}</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-stone-400 dark:text-stone-500 leading-none">Escrow Secured</span>
+                <span className="text-sm font-bold text-cyan-950 dark:text-white leading-tight">{activeDeal.escrowAmount}</span>
               </div>
             </div>
           </div>
@@ -189,7 +189,7 @@ export default function DashboardOverview() {
             <div className="relative mx-auto max-w-4xl">
               
               {/* Background Track Line */}
-              <div className="absolute left-[10%] top-6 w-[80%] h-1 bg-stone-100 rounded-full" />
+              <div className="absolute left-[10%] top-6 w-[80%] h-1 bg-stone-100 dark:bg-white/10 rounded-full" />
               
               {/* Animated Progress Line */}
               <motion.div 
@@ -222,9 +222,9 @@ export default function DashboardOverview() {
                         )}
                         
                         <div className={`relative z-10 flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 ${
-                          isCompleted ? 'bg-cyan-600 text-white ring-4 ring-white' :
-                          isCurrent ? 'bg-white text-cyan-600 ring-4 ring-cyan-100 shadow-lg shadow-cyan-900/10' :
-                          'bg-white text-stone-300 ring-4 ring-white border-2 border-dashed border-stone-200'
+                          isCompleted ? 'bg-cyan-600 text-white ring-4 ring-white dark:ring-[#0f1923]' :
+                          isCurrent ? 'bg-white dark:bg-[#0f1923] text-cyan-600 dark:text-cyan-400 ring-4 ring-cyan-100 dark:ring-cyan-900/50 shadow-lg shadow-cyan-900/10' :
+                          'bg-white dark:bg-[#0f1923] text-stone-300 dark:text-stone-600 ring-4 ring-white dark:ring-[#0f1923] border-2 border-dashed border-stone-200 dark:border-stone-700'
                         }`}>
                           <Icon className={`h-5 w-5 ${isCurrent ? 'animate-pulse' : ''}`} />
                         </div>
@@ -232,12 +232,12 @@ export default function DashboardOverview() {
 
                       {/* Text */}
                       <h3 className={`text-center font-heading text-sm font-semibold transition-colors ${
-                        isCompleted || isCurrent ? 'text-cyan-950' : 'text-stone-400'
+                        isCompleted || isCurrent ? 'text-cyan-950 dark:text-white' : 'text-stone-400 dark:text-stone-500'
                       }`}>
                         {step.title}
                       </h3>
                       <p className={`mt-1 text-center text-xs font-medium ${
-                        isCurrent ? 'text-cyan-600' : 'text-stone-500'
+                        isCurrent ? 'text-cyan-600 dark:text-cyan-400' : 'text-stone-500 dark:text-stone-500'
                       }`}>
                         {step.date}
                       </p>

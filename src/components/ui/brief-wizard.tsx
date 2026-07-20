@@ -40,8 +40,8 @@ export function BriefWizard({ isOpen, onClose }: BriefWizardProps) {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-bold text-cyan-950 font-heading">What kind of brief is this?</h3>
-              <p className="text-sm text-stone-500">Select the primary deliverable you need from creators.</p>
+              <h3 className="text-lg font-bold text-cyan-950 dark:text-white font-heading">What kind of brief is this?</h3>
+              <p className="text-sm text-stone-500 dark:text-stone-400">Select the primary deliverable you need from creators.</p>
             </div>
             
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -52,11 +52,11 @@ export function BriefWizard({ isOpen, onClose }: BriefWizardProps) {
               ].map((type) => (
                 <div 
                   key={type.id}
-                  className="flex flex-col items-center text-center p-4 rounded-xl border-2 border-stone-100 hover:border-cyan-500 hover:bg-cyan-50 cursor-pointer transition-colors"
+                  className="flex flex-col items-center text-center p-4 rounded-xl border-2 border-stone-100 dark:border-white/[0.05] hover:border-cyan-500 dark:hover:border-cyan-500 hover:bg-cyan-50 dark:hover:bg-cyan-900/20 cursor-pointer transition-colors group"
                 >
-                  <type.icon className="h-6 w-6 text-cyan-600 mb-2" />
-                  <span className="text-sm font-bold text-cyan-950">{type.title}</span>
-                  <span className="text-xs text-stone-500 mt-1">{type.desc}</span>
+                  <type.icon className="h-6 w-6 text-cyan-600 dark:text-cyan-400 mb-2" />
+                  <span className="text-sm font-bold text-cyan-950 dark:text-white">{type.title}</span>
+                  <span className="text-xs text-stone-500 dark:text-stone-400 mt-1">{type.desc}</span>
                 </div>
               ))}
             </div>
@@ -66,27 +66,27 @@ export function BriefWizard({ isOpen, onClose }: BriefWizardProps) {
         return (
           <div className="space-y-6">
             <div>
-              <h3 className="text-lg font-bold text-cyan-950 font-heading">Campaign Details</h3>
-              <p className="text-sm text-stone-500">Give your campaign a name and set your budget.</p>
+              <h3 className="text-lg font-bold text-cyan-950 dark:text-white font-heading">Campaign Details</h3>
+              <p className="text-sm text-stone-500 dark:text-stone-400">Give your campaign a name and set your budget.</p>
             </div>
             
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1.5">Campaign Name</label>
+                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">Campaign Name</label>
                 <input
                   type="text"
                   placeholder="e.g., Summer Collection Launch"
-                  className="w-full rounded-lg border border-stone-200 bg-white px-4 py-2.5 text-sm text-stone-900 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                  className="w-full rounded-lg border border-stone-200 dark:border-white/10 bg-white dark:bg-white/[0.02] px-4 py-2.5 text-sm text-stone-900 dark:text-white outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-stone-400 dark:placeholder:text-stone-600"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1.5">Budget (per creator)</label>
+                <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">Budget (per creator)</label>
                 <div className="relative">
-                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-500 font-medium">৳</span>
+                  <span className="absolute left-4 top-1/2 -translate-y-1/2 text-stone-500 dark:text-stone-400 font-medium">৳</span>
                   <input
                     type="number"
                     placeholder="15,000"
-                    className="w-full rounded-lg border border-stone-200 bg-white pl-8 pr-4 py-2.5 text-sm text-stone-900 outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all"
+                    className="w-full rounded-lg border border-stone-200 dark:border-white/10 bg-white dark:bg-white/[0.02] pl-8 pr-4 py-2.5 text-sm text-stone-900 dark:text-white outline-none focus:border-cyan-500 focus:ring-1 focus:ring-cyan-500 transition-all placeholder:text-stone-400 dark:placeholder:text-stone-600"
                   />
                 </div>
               </div>
@@ -100,13 +100,13 @@ export function BriefWizard({ isOpen, onClose }: BriefWizardProps) {
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", bounce: 0.5, duration: 0.6 }}
-              className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 text-green-600"
+              className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-500"
             >
               <CheckCircle2 className="h-8 w-8" />
             </motion.div>
             <div>
-              <h3 className="text-xl font-bold text-cyan-950 font-heading">Brief Posted!</h3>
-              <p className="text-sm text-stone-500 mt-2 max-w-[250px] mx-auto">
+              <h3 className="text-xl font-bold text-cyan-950 dark:text-white font-heading">Brief Posted!</h3>
+              <p className="text-sm text-stone-500 dark:text-stone-400 mt-2 max-w-[250px] mx-auto">
                 Your brief is now live. We'll notify matching creators immediately.
               </p>
             </div>
@@ -159,18 +159,18 @@ export function BriefWizard({ isOpen, onClose }: BriefWizardProps) {
             className="relative w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl ring-1 ring-black/5 flex flex-col"
           >
             {/* Header */}
-            <div className="flex items-center justify-between border-b border-stone-100 bg-stone-50/50 px-6 py-4 z-10">
+            <div className="flex items-center justify-between border-b border-stone-100 dark:border-white/[0.05] bg-stone-50/50 dark:bg-white/[0.02] px-6 py-4 z-10">
               <div className="flex items-center gap-3">
-                <span className="font-heading text-lg font-bold text-cyan-950">Post a Brief</span>
+                <span className="font-heading text-lg font-bold text-cyan-950 dark:text-white">Post a Brief</span>
                 {step < 3 && (
-                  <span className="rounded-full bg-cyan-100 px-2.5 py-0.5 text-xs font-semibold text-cyan-800">
+                  <span className="rounded-full bg-cyan-100 dark:bg-cyan-900/40 px-2.5 py-0.5 text-xs font-semibold text-cyan-800 dark:text-cyan-300">
                     Step {step} of 2
                   </span>
                 )}
               </div>
               <button 
                 onClick={resetAndClose}
-                className="rounded-full p-1.5 text-stone-400 hover:bg-stone-200 hover:text-stone-700 transition-colors"
+                className="rounded-full p-1.5 text-stone-400 dark:text-stone-500 hover:bg-stone-200 dark:hover:bg-white/10 hover:text-stone-700 dark:hover:text-stone-300 transition-colors"
               >
                 <X className="h-5 w-5" />
               </button>
@@ -178,7 +178,7 @@ export function BriefWizard({ isOpen, onClose }: BriefWizardProps) {
 
             {/* Progress Bar */}
             {step < 3 && (
-              <div className="h-1 w-full bg-stone-100">
+              <div className="h-1 w-full bg-stone-100 dark:bg-white/10">
                 <motion.div 
                   initial={{ width: "0%" }}
                   animate={{ width: `${(step / 2) * 100}%` }}
@@ -207,13 +207,13 @@ export function BriefWizard({ isOpen, onClose }: BriefWizardProps) {
             </div>
 
             {/* Footer Navigation */}
-            <div className="flex items-center justify-between border-t border-stone-100 bg-stone-50 px-6 py-4 z-10">
+            <div className="flex items-center justify-between border-t border-stone-100 dark:border-white/[0.05] bg-stone-50 dark:bg-white/[0.02] px-6 py-4 z-10">
               {step === 1 ? (
                 <div /> // Empty div to push 'Next' to the right
               ) : step < 3 ? (
                 <button
                   onClick={prevStep}
-                  className="flex items-center gap-2 text-sm font-medium text-stone-500 hover:text-stone-800 transition-colors"
+                  className="flex items-center gap-2 text-sm font-medium text-stone-500 hover:text-stone-800 dark:text-stone-400 dark:hover:text-white transition-colors"
                 >
                   <ArrowLeft className="h-4 w-4" /> Back
                 </button>
