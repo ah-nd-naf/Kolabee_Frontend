@@ -383,7 +383,7 @@ export default function LandingPage() {
             variants={heroItem(0.40)}
             initial="hidden"
             animate="visible"
-            className="mt-6 text-lg leading-8 text-cyan-100/90 sm:text-xl"
+            className="mt-6 text-lg leading-8 text-slate-50/70 sm:text-xl"
           >
             Kolabee connects businesses with top-tier creators for product promotion,
             photoshoots, and referral programs. One simple platform. Shared data.
