@@ -92,4 +92,3 @@ Kolabee prioritizes **Visual Excellence**. The UI avoids flat, generic designs i
 
 ---
 
-*Built with ❤️ for seamless creator collaboration.*
