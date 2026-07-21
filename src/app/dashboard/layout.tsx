@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { PersonaContext } from "@/lib/persona-context";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   LayoutDashboard,
@@ -391,7 +392,9 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               transition={{ duration: 0.3, ease: EASE }}
               className="mx-auto max-w-7xl h-full"
             >
-              {children}
+              <PersonaContext.Provider value={persona}>
+                {children}
+              </PersonaContext.Provider>
             </motion.div>
           </AnimatePresence>
         </div>

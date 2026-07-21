@@ -157,3 +157,44 @@ export const mockCreatorLinks: CreatorLink[] = [
     createdAt: "2025-11-20",
   },
 ];
+
+// 4. Creator View: Earnings & Tier Data
+export const mockCreatorEarnings = {
+  availableBalance: 28500,
+  pendingCommissions: 6200,
+  clearedThisMonth: 18400,
+  currentTier: "Silver" as Tier,
+  currentRateBps: 200,
+  nextTier: "Gold" as Tier,
+  nextTierThresholdBDT: 50000,
+  progressTowardNextTier: 18400,
+};
+
+// 5. Creator View: Collaboration Invites
+export interface CollabInvite {
+  id: string;
+  businessName: string;
+  businessLogo: string;
+  category: string;
+  proposedRateBps: number;
+  invitedAt: string;
+}
+
+export const mockCollabInvites: CollabInvite[] = [
+  {
+    id: "i_1",
+    businessName: "GadgetHub",
+    businessLogo: "https://i.pravatar.cc/150?u=gadgethub",
+    category: "Product Promotion",
+    proposedRateBps: 250,
+    invitedAt: "2026-07-18",
+  },
+  {
+    id: "i_2",
+    businessName: "StyleNest",
+    businessLogo: "https://i.pravatar.cc/150?u=stylenest",
+    category: "UGC & Videography",
+    proposedRateBps: 220,
+    invitedAt: "2026-07-16",
+  },
+];

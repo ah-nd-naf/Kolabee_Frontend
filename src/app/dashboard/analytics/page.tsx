@@ -11,10 +11,17 @@ import {
   Filter,
   TrendingDown,
   ChevronRight,
+  MousePointerClick,
+  Banknote,
+  Link2,
+  Award,
+  Star,
+  TrendingUp,
 } from "lucide-react";
-import { mockFunnelData } from "@/lib/mock-data";
+import { mockFunnelData, mockCreatorLinks, mockCreatorEarnings } from "@/lib/mock-data";
 import { CountUp } from "@/components/ui/count-up";
 import { StatCardSkeleton } from "@/components/ui/skeleton";
+import { usePersona } from "@/lib/persona-context";
 
 // Canonical easing curve — [0.16, 1, 0.3, 1]
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
@@ -237,7 +244,98 @@ function PremiumFunnelChart({ stages }: { stages: FunnelStage[] }) {
    Main Page
 ─────────────────────────────────────────────────── */
 
+// ─── Creator Rate Detail Card ─────────────────────────────────────────────────
+const TIER_COLORS: Record<string, { bg: string; text: string; ring: string }> = {
+  Bronze:   { bg: "bg-orange-100 dark:bg-orange-900/40",  text: "text-orange-700 dark:text-orange-300",  ring: "ring-orange-200 dark:ring-orange-800/50" },
+  Silver:   { bg: "bg-stone-100 dark:bg-stone-800/50",    text: "text-stone-600 dark:text-stone-300",    ring: "ring-stone-200 dark:ring-stone-700/50"   },
+  Gold:     { bg: "bg-amber-100 dark:bg-amber-900/40",    text: "text-amber-700 dark:text-amber-300",    ring: "ring-amber-200 dark:ring-amber-800/50"   },
+  Platinum: { bg: "bg-cyan-100 dark:bg-cyan-900/40",      text: "text-cyan-700 dark:text-cyan-300",      ring: "ring-cyan-200 dark:ring-cyan-800/50"     },
+};
+const NEXT_TIER_RATES: Record<string, number> = { Gold: 250, Platinum: 300 };
+
+function CreatorRateDetailCard() {
+  const e = mockCreatorEarnings;
+  const pct = Math.min((e.progressTowardNextTier / e.nextTierThresholdBDT) * 100, 100);
+  const currentColors = TIER_COLORS[e.currentTier] ?? TIER_COLORS.Silver;
+  const nextColors    = TIER_COLORS[e.nextTier]    ?? TIER_COLORS.Gold;
+  const nextRate      = NEXT_TIER_RATES[e.nextTier] ?? 250;
+  const remaining     = e.nextTierThresholdBDT - e.progressTowardNextTier;
+  const ordersNeeded  = Math.ceil(remaining / ((e.currentRateBps / 100 / 100) * 1000)); // rough estimate
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6, delay: 0.3, ease: EASE }}
+      className="rounded-3xl premium-glass p-6 sm:p-8 shadow-lg"
+    >
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h3 className="font-heading text-2xl font-bold text-cyan-950 dark:text-white flex items-center gap-2">
+            <Award className="h-5 w-5 text-cyan-500" />
+            Commission Rate Progress
+          </h3>
+          <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
+            Detailed breakdown of your tier progress and how to level up.
+          </p>
+        </div>
+        <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-wider ring-1 ${currentColors.bg} ${currentColors.text} ${currentColors.ring}`}>
+          <Star className="h-3.5 w-3.5" />
+          {e.currentTier} · {(e.currentRateBps / 100).toFixed(2)}%
+        </span>
+      </div>
+
+      {/* Big progress bar */}
+      <div className="mb-6">
+        <div className="flex items-baseline justify-between mb-2">
+          <span className="text-sm font-semibold text-stone-700 dark:text-stone-300">
+            ৳{e.progressTowardNextTier.toLocaleString()}
+            <span className="text-stone-400 dark:text-stone-500 font-normal"> cleared toward {e.nextTier}</span>
+          </span>
+          <span className="text-sm font-bold text-cyan-600 dark:text-cyan-400">{pct.toFixed(1)}%</span>
+        </div>
+        <div className="h-4 w-full rounded-full bg-stone-100 dark:bg-stone-800/50 ring-1 ring-stone-200/50 dark:ring-stone-800/50 overflow-hidden">
+          <motion.div
+            className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 relative overflow-hidden"
+            initial={{ width: "0%" }}
+            animate={{ width: `${pct}%` }}
+            transition={{ duration: 1.4, delay: 0.5, ease: EASE }}
+          >
+            <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent" />
+            <motion.div
+              className="absolute inset-0"
+              animate={{ x: ["-100%", "200%"] }}
+              transition={{ duration: 2.5, delay: 1.2, repeat: Infinity, repeatDelay: 2, ease: "easeInOut" }}
+              style={{ background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)", width: "50%" }}
+            />
+          </motion.div>
+        </div>
+        <p className="mt-2 text-xs text-stone-500 dark:text-stone-400">
+          ৳{remaining.toLocaleString()} more to unlock <strong className={`font-semibold ${nextColors.text}`}>{e.nextTier}</strong> at <strong className={`font-semibold ${nextColors.text}`}>{(nextRate / 100).toFixed(2)}%</strong>
+        </p>
+      </div>
+
+      {/* Stats grid */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+        {[
+          { label: "Current Rate",     value: `${(e.currentRateBps / 100).toFixed(2)}%`,           sub: e.currentTier,                                     colors: currentColors },
+          { label: "Next Rate",        value: `${(nextRate / 100).toFixed(2)}%`,                   sub: e.nextTier,                                        colors: nextColors    },
+          { label: "Cleared This Month", value: `৳${e.progressTowardNextTier.toLocaleString()}`,    sub: `of ৳${e.nextTierThresholdBDT.toLocaleString()}`, colors: null          },
+          { label: "Still Needed",     value: `৳${remaining.toLocaleString()}`,                    sub: "to level up",                                     colors: null          },
+        ].map(({ label, value, sub, colors }) => (
+          <div key={label} className={`rounded-xl p-4 ring-1 ${colors ? `${colors.bg} ${colors.ring}` : "bg-stone-50 dark:bg-stone-800/30 ring-stone-200 dark:ring-stone-800/50"}`}>
+            <p className="text-[10px] font-bold uppercase tracking-widest text-stone-500 dark:text-stone-400 mb-1">{label}</p>
+            <p className={`font-heading text-lg font-extrabold ${colors ? colors.text : "text-stone-800 dark:text-stone-200"}`}>{value}</p>
+            <p className={`text-xs font-medium ${colors ? colors.text + " opacity-70" : "text-stone-500 dark:text-stone-400"}`}>{sub}</p>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+}
+
 export default function AnalyticsPage() {
+  const persona = usePersona();
   const [isLoading, setIsLoading] = useState(true);
   const [liveCheckout, setLiveCheckout] = useState(mockFunnelData.liveInCheckoutBase);
 
@@ -265,6 +363,158 @@ export default function AnalyticsPage() {
     icon: stageIcons[i % stageIcons.length],
   }));
 
+  // Creator-specific derived stats
+  const totalClicks   = mockCreatorLinks.reduce((s, l) => s + l.clicks, 0);
+  const totalOrders   = mockCreatorLinks.reduce((s, l) => s + l.orders, 0);
+  const myConversion  = totalClicks > 0 ? (totalOrders / totalClicks) * 100 : 0;
+
+  // ── Skeleton ──────────────────────────────────────────────────────────────
+  const skeletonChart = (
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: 0.2, ease: EASE }}
+      className="rounded-3xl premium-glass p-6 sm:p-10"
+    >
+      <div className="h-6 w-48 rounded-full skeleton-shimmer mb-8" />
+      <div className="flex flex-col gap-6">
+        {[80, 65, 42, 26, 18].map((w, i) => (
+          <div key={i} className="flex items-center gap-4">
+            <div className="w-10 h-10 rounded-full skeleton-shimmer shrink-0" />
+            <div className="flex-1 flex flex-col gap-2">
+               <div className="flex justify-between">
+                 <div className="w-24 h-4 rounded-full skeleton-shimmer" />
+                 <div className="w-16 h-4 rounded-full skeleton-shimmer" />
+               </div>
+               <div className="h-4 rounded-full skeleton-shimmer w-full" style={{ maxWidth: `${w}%` }} />
+            </div>
+          </div>
+        ))}
+      </div>
+    </motion.div>
+  );
+
+  // ── Filter button (shared) ─────────────────────────────────────────────────
+  const filterBtn = (
+    <motion.div
+      initial={{ opacity: 0, x: 20 }}
+      animate={{ opacity: 1, x: 0 }}
+      transition={{ duration: 0.5, ease: EASE }}
+      className="flex items-center gap-3"
+    >
+      <motion.button
+        whileHover={{ scale: 1.03 }}
+        whileTap={{ scale: 0.96 }}
+        transition={{ duration: 0.2, ease: EASE }}
+        className="flex h-10 items-center justify-center gap-2 rounded-full border border-stone-200 bg-white dark:border-stone-800 dark:bg-[#0a0f14] px-4 text-sm font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-50 hover:border-stone-300 transition-colors"
+      >
+        <Filter className="h-4 w-4" />
+        <span>Last 30 Days</span>
+      </motion.button>
+    </motion.div>
+  );
+
+  // ════════════════════════════════════════════════════════════
+  //  CREATOR ANALYTICS VIEW
+  // ════════════════════════════════════════════════════════════
+  if (persona === "creator") {
+    return (
+      <div className="flex flex-col gap-8 pb-10">
+        {/* Page Header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, ease: EASE }}>
+            <h1 className="font-heading text-3xl font-bold text-cyan-950 dark:text-white">My Analytics</h1>
+            <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
+              Your personal link performance and commission rate progress.
+            </p>
+          </motion.div>
+          {filterBtn}
+        </div>
+
+        {/* Creator KPI Cards */}
+        {isLoading ? (
+          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {[0, 1, 2].map((i) => (<motion.div key={i} variants={cardVariants}><StatCardSkeleton /></motion.div>))}
+          </motion.div>
+        ) : (
+          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {/* My Total Clicks */}
+            <motion.div variants={cardVariants} whileHover={{ y: -3 }} transition={{ duration: 0.22, ease: EASE }} className="premium-glass rounded-2xl p-6">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-stone-500 dark:text-stone-400">My Total Clicks</span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-50 text-cyan-600"><MousePointerClick className="h-5 w-5" /></div>
+              </div>
+              <div className="mt-4 flex items-baseline gap-2">
+                <span className="text-3xl font-bold text-cyan-950 dark:text-white">
+                  <CountUp to={totalClicks} duration={1400} delay={200} formatter={(n) => Math.round(n).toLocaleString()} />
+                </span>
+                <span className="flex items-center text-sm font-medium text-green-600"><ArrowUpRight className="h-4 w-4" /> 9.4%</span>
+              </div>
+            </motion.div>
+
+            {/* My Conversion Rate */}
+            <motion.div variants={cardVariants} whileHover={{ y: -3 }} transition={{ duration: 0.22, ease: EASE }} className="premium-glass rounded-2xl p-6">
+              <div className="flex items-center justify-between">
+                <span className="text-sm font-medium text-stone-500 dark:text-stone-400">My Conversion Rate</span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-50 text-cyan-600"><TrendingUp className="h-5 w-5" /></div>
+              </div>
+              <div className="mt-4 flex items-baseline gap-2">
+                <span className="text-3xl font-bold text-cyan-950 dark:text-white">
+                  <CountUp to={myConversion} duration={1400} delay={250} decimals={2} suffix="%" />
+                </span>
+                <span className="flex items-center text-sm font-medium text-green-600"><ArrowUpRight className="h-4 w-4" /> 1.2%</span>
+              </div>
+            </motion.div>
+
+            {/* Commissions This Month */}
+            <motion.div variants={cardVariants} whileHover={{ y: -3 }} transition={{ duration: 0.22, ease: EASE }} className="relative overflow-hidden premium-glass rounded-2xl p-6">
+              <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-cyan-100/50 dark:bg-cyan-400/10 blur-xl" />
+              <div className="relative z-10 flex items-center justify-between">
+                <span className="text-sm font-medium text-stone-500 dark:text-stone-400">Commissions This Month</span>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-50 text-cyan-600"><Banknote className="h-5 w-5" /></div>
+              </div>
+              <div className="relative z-10 mt-4 flex items-baseline gap-2">
+                <span className="text-3xl font-bold text-cyan-950 dark:text-white">
+                  ৳<CountUp to={mockCreatorEarnings.clearedThisMonth} duration={1400} delay={300} formatter={(n) => Math.round(n).toLocaleString()} />
+                </span>
+                <span className="flex items-center text-sm font-medium text-green-600"><ArrowUpRight className="h-4 w-4" /> 14.2%</span>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+
+        {/* Creator Funnel Chart */}
+        {!isLoading && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.25, ease: EASE }} className="rounded-3xl premium-glass p-6 sm:p-10 shadow-lg">
+            <div className="mb-6 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
+              <div>
+                <h3 className="font-heading text-2xl font-bold text-cyan-950 dark:text-white flex items-center gap-2">
+                  <Link2 className="h-5 w-5 text-cyan-500" />
+                  Your Funnel
+                </h3>
+                <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
+                  Visitor journey through <strong className="font-semibold text-stone-700 dark:text-stone-300">your links</strong> — from first click to confirmed order.
+                </p>
+              </div>
+              <div className="flex items-center gap-2 rounded-full bg-cyan-50 dark:bg-cyan-950/50 px-4 py-2 ring-1 ring-cyan-100 dark:ring-cyan-900/50">
+                <motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="h-2 w-2 rounded-full bg-cyan-500" />
+                <span className="text-xs font-bold uppercase tracking-wider text-cyan-700 dark:text-cyan-400">Last 30 Days</span>
+              </div>
+            </div>
+            <PremiumFunnelChart stages={funnelStages} />
+          </motion.div>
+        )}
+        {isLoading && skeletonChart}
+
+        {/* Rate Detail */}
+        {!isLoading && <CreatorRateDetailCard />}
+      </div>
+    );
+  }
+
+  // ════════════════════════════════════════════════════════════
+  //  BUSINESS ANALYTICS VIEW
+  // ════════════════════════════════════════════════════════════
   return (
     <div className="flex flex-col gap-8 pb-10">
 
@@ -275,27 +525,12 @@ export default function AnalyticsPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease: EASE }}
         >
-          <h1 className="font-heading text-3xl font-bold text-cyan-950">Link Analytics</h1>
-          <p className="mt-1 text-sm text-stone-500">
+          <h1 className="font-heading text-3xl font-bold text-cyan-950 dark:text-white">Link Analytics</h1>
+          <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
             Real-time funnel conversion and attribution data.
           </p>
         </motion.div>
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5, ease: EASE }}
-          className="flex items-center gap-3"
-        >
-          <motion.button
-            whileHover={{ scale: 1.03 }}
-            whileTap={{ scale: 0.96 }}
-            transition={{ duration: 0.2, ease: EASE }}
-            className="flex h-10 items-center justify-center gap-2 rounded-full border border-stone-200 bg-white px-4 text-sm font-medium text-stone-700 hover:bg-stone-50 hover:border-stone-300 transition-colors"
-          >
-            <Filter className="h-4 w-4" />
-            <span>Last 30 Days</span>
-          </motion.button>
-        </motion.div>
+        {filterBtn}
       </div>
 
       {/* KPI Cards */}
@@ -445,30 +680,7 @@ export default function AnalyticsPage() {
       )}
 
       {/* Skeleton chart while loading */}
-      {isLoading && (
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.2, ease: EASE }}
-          className="rounded-3xl premium-glass p-6 sm:p-10"
-        >
-          <div className="h-6 w-48 rounded-full skeleton-shimmer mb-8" />
-          <div className="flex flex-col gap-6">
-            {[80, 65, 42, 26, 18].map((w, i) => (
-              <div key={i} className="flex items-center gap-4">
-                <div className="w-10 h-10 rounded-full skeleton-shimmer shrink-0" />
-                <div className="flex-1 flex flex-col gap-2">
-                   <div className="flex justify-between">
-                     <div className="w-24 h-4 rounded-full skeleton-shimmer" />
-                     <div className="w-16 h-4 rounded-full skeleton-shimmer" />
-                   </div>
-                   <div className="h-4 rounded-full skeleton-shimmer w-full" style={{ maxWidth: `${w}%` }} />
-                </div>
-              </div>
-            ))}
-          </div>
-        </motion.div>
-      )}
+      {isLoading && skeletonChart}
 
     </div>
   );
