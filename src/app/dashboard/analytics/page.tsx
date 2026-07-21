@@ -338,18 +338,18 @@ export default function AnalyticsPage() {
           {/* Total Visits */}
           <motion.div
             variants={cardVariants}
-            whileHover={{ y: -4, boxShadow: "0 12px 24px -4px rgb(8 145 178 / 0.10)" }}
-            transition={{ duration: 0.25, ease: EASE }}
-            className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+            whileHover={{ y: -3 }}
+            transition={{ duration: 0.22, ease: EASE }}
+            className="premium-glass rounded-2xl p-6"
           >
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-stone-500">Total Visits</span>
+              <span className="text-sm font-medium text-stone-500 dark:text-stone-400">Total Visits</span>
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-50 text-cyan-600">
                 <Users className="h-5 w-5" />
               </div>
             </div>
             <div className="mt-4 flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-cyan-950">
+              <span className="text-3xl font-bold text-cyan-950 dark:text-white">
                 <CountUp
                   to={mockFunnelData.totalVisits}
                   duration={1400}
@@ -366,18 +366,18 @@ export default function AnalyticsPage() {
           {/* Conversion Rate */}
           <motion.div
             variants={cardVariants}
-            whileHover={{ y: -4, boxShadow: "0 12px 24px -4px rgb(8 145 178 / 0.10)" }}
-            transition={{ duration: 0.25, ease: EASE }}
-            className="rounded-2xl border border-stone-200 bg-white p-6 shadow-sm"
+            whileHover={{ y: -3 }}
+            transition={{ duration: 0.22, ease: EASE }}
+            className="premium-glass rounded-2xl p-6"
           >
             <div className="flex items-center justify-between">
-              <span className="text-sm font-medium text-stone-500">Avg. Conversion Rate</span>
+              <span className="text-sm font-medium text-stone-500 dark:text-stone-400">Avg. Conversion Rate</span>
               <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-50 text-cyan-600">
                 <ShoppingCart className="h-5 w-5" />
               </div>
             </div>
             <div className="mt-4 flex items-baseline gap-2">
-              <span className="text-3xl font-bold text-cyan-950">
+              <span className="text-3xl font-bold text-cyan-950 dark:text-white">
                 <CountUp to={conversionRate} duration={1400} delay={250} decimals={2} suffix="%" />
               </span>
               <span className="flex items-center text-sm font-medium text-green-600">
@@ -389,9 +389,9 @@ export default function AnalyticsPage() {
           {/* Live Checkout */}
           <motion.div
             variants={cardVariants}
-            whileHover={{ y: -4 }}
-            transition={{ duration: 0.25, ease: EASE }}
-            className="relative overflow-hidden rounded-2xl border border-cyan-200 dark:border-cyan-800/60 bg-cyan-50 dark:bg-cyan-950/40 p-6 shadow-sm"
+            whileHover={{ y: -3 }}
+            transition={{ duration: 0.22, ease: EASE }}
+            className="relative overflow-hidden premium-glass rounded-2xl p-6"
           >
             <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-cyan-100/50 dark:bg-cyan-400/10 blur-xl" />
             <div className="relative z-10 flex items-center justify-between">
