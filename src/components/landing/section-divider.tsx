@@ -16,6 +16,7 @@ interface SectionDividerProps {
   color: "teal" | "cyan" | "purple" | "blue";
   duration?: number;
   pulseDuration?: number;
+  direction?: "ltr" | "rtl";
 }
 
 const colorMaps = {
