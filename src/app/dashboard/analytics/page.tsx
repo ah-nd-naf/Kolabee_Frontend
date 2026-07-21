@@ -106,9 +106,9 @@ function PremiumFunnelChart({ stages }: { stages: FunnelStage[] }) {
                   transition={{ duration: 0.4, delay: i * 0.1 + 0.1, ease: EASE }}
                   className="absolute -top-5 left-[-1.5rem] sm:left-[-1.5rem] z-20 flex items-center"
                 >
-                  <div className="flex h-6 items-center gap-1.5 rounded-full bg-white dark:bg-stone-900 px-2.5 py-1 ring-1 ring-stone-200 dark:ring-stone-800 shadow-sm">
+                  <div className="flex h-6 items-center gap-1.5 rounded-full bg-white/60 dark:bg-black/40 backdrop-blur-md px-2.5 py-1 ring-1 ring-stone-200/50 dark:ring-white/10 shadow-sm">
                     <TrendingDown className="h-3 w-3 text-red-500" />
-                    <span className="text-[10px] font-bold text-stone-600 dark:text-stone-400">
+                    <span className="text-[10px] font-bold text-stone-700 dark:text-stone-300">
                       -{dropOff}%
                     </span>
                   </div>
@@ -125,7 +125,7 @@ function PremiumFunnelChart({ stages }: { stages: FunnelStage[] }) {
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={isVisible ? { opacity: 1, scale: 1 } : {}}
                   transition={{ duration: 0.5, delay: i * 0.1, ease: EASE }}
-                  className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white dark:bg-[#0a0f14] ring-4 ring-white dark:ring-[#0a0f14] shadow-sm border border-stone-100 dark:border-stone-800 cursor-default"
+                  className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/40 dark:bg-black/40 ring-4 ring-white/30 dark:ring-white/5 shadow-sm border border-stone-200/50 dark:border-white/10 cursor-default"
                 >
                   {isHovered && (
                     <motion.div
@@ -162,7 +162,7 @@ function PremiumFunnelChart({ stages }: { stages: FunnelStage[] }) {
                   </div>
 
                   {/* The Bar itself */}
-                  <div className="relative h-3 sm:h-4 w-full rounded-full bg-stone-100 dark:bg-stone-800/50 overflow-hidden shadow-inner ring-1 ring-stone-200/50 dark:ring-stone-800/50">
+                  <div className="relative h-3 sm:h-4 w-full rounded-full bg-black/5 dark:bg-white/5 overflow-hidden shadow-inner ring-1 ring-black/5 dark:ring-white/10">
                     <motion.div
                       className="absolute inset-y-0 left-0 rounded-full"
                       initial={{ width: "0%" }}
@@ -246,10 +246,10 @@ function PremiumFunnelChart({ stages }: { stages: FunnelStage[] }) {
 
 // ─── Creator Rate Detail Card ─────────────────────────────────────────────────
 const TIER_COLORS: Record<string, { bg: string; text: string; ring: string }> = {
-  Bronze:   { bg: "bg-orange-100 dark:bg-orange-900/40",  text: "text-orange-700 dark:text-orange-300",  ring: "ring-orange-200 dark:ring-orange-800/50" },
-  Silver:   { bg: "bg-stone-100 dark:bg-stone-800/50",    text: "text-stone-600 dark:text-stone-300",    ring: "ring-stone-200 dark:ring-stone-700/50"   },
-  Gold:     { bg: "bg-amber-100 dark:bg-amber-900/40",    text: "text-amber-700 dark:text-amber-300",    ring: "ring-amber-200 dark:ring-amber-800/50"   },
-  Platinum: { bg: "bg-cyan-100 dark:bg-cyan-900/40",      text: "text-cyan-700 dark:text-cyan-300",      ring: "ring-cyan-200 dark:ring-cyan-800/50"     },
+  Bronze:   { bg: "bg-orange-500/10 dark:bg-orange-500/20",  text: "text-orange-700 dark:text-orange-300",  ring: "ring-orange-500/20 dark:ring-orange-500/30" },
+  Silver:   { bg: "bg-stone-500/10 dark:bg-stone-500/20",    text: "text-stone-700 dark:text-stone-300",    ring: "ring-stone-500/20 dark:ring-stone-500/30"   },
+  Gold:     { bg: "bg-amber-500/10 dark:bg-amber-500/20",    text: "text-amber-700 dark:text-amber-300",    ring: "ring-amber-500/20 dark:ring-amber-500/30"   },
+  Platinum: { bg: "bg-cyan-500/10 dark:bg-cyan-500/20",      text: "text-cyan-700 dark:text-cyan-300",      ring: "ring-cyan-500/20 dark:ring-cyan-500/30"     },
 };
 const NEXT_TIER_RATES: Record<string, number> = { Gold: 250, Platinum: 300 };
 
@@ -294,7 +294,7 @@ function CreatorRateDetailCard() {
           </span>
           <span className="text-sm font-bold text-cyan-600 dark:text-cyan-400">{pct.toFixed(1)}%</span>
         </div>
-        <div className="h-4 w-full rounded-full bg-stone-100 dark:bg-stone-800/50 ring-1 ring-stone-200/50 dark:ring-stone-800/50 overflow-hidden">
+        <div className="h-4 w-full rounded-full bg-black/5 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10 overflow-hidden">
           <motion.div
             className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 relative overflow-hidden"
             initial={{ width: "0%" }}
@@ -323,7 +323,7 @@ function CreatorRateDetailCard() {
           { label: "Cleared This Month", value: `৳${e.progressTowardNextTier.toLocaleString()}`,    sub: `of ৳${e.nextTierThresholdBDT.toLocaleString()}`, colors: null          },
           { label: "Still Needed",     value: `৳${remaining.toLocaleString()}`,                    sub: "to level up",                                     colors: null          },
         ].map(({ label, value, sub, colors }) => (
-          <div key={label} className={`rounded-xl p-4 ring-1 ${colors ? `${colors.bg} ${colors.ring}` : "bg-stone-50 dark:bg-stone-800/30 ring-stone-200 dark:ring-stone-800/50"}`}>
+          <div key={label} className={`rounded-xl p-4 ring-1 ${colors ? `${colors.bg} ${colors.ring}` : "bg-black/5 dark:bg-white/5 ring-black/5 dark:ring-white/10"}`}>
             <p className="text-[10px] font-bold uppercase tracking-widest text-stone-500 dark:text-stone-400 mb-1">{label}</p>
             <p className={`font-heading text-lg font-extrabold ${colors ? colors.text : "text-stone-800 dark:text-stone-200"}`}>{value}</p>
             <p className={`text-xs font-medium ${colors ? colors.text + " opacity-70" : "text-stone-500 dark:text-stone-400"}`}>{sub}</p>
@@ -450,7 +450,7 @@ export default function AnalyticsPage() {
             <motion.div variants={cardVariants} whileHover={{ y: -3 }} transition={{ duration: 0.22, ease: EASE }} className="premium-glass rounded-2xl p-6">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-stone-500 dark:text-stone-400">My Total Clicks</span>
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-50 text-cyan-600"><MousePointerClick className="h-5 w-5" /></div>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-400"><MousePointerClick className="h-5 w-5" /></div>
               </div>
               <div className="mt-4 flex items-baseline gap-2">
                 <span className="text-3xl font-bold text-cyan-950 dark:text-white">
@@ -464,7 +464,7 @@ export default function AnalyticsPage() {
             <motion.div variants={cardVariants} whileHover={{ y: -3 }} transition={{ duration: 0.22, ease: EASE }} className="premium-glass rounded-2xl p-6">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-stone-500 dark:text-stone-400">My Conversion Rate</span>
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-50 text-cyan-600"><TrendingUp className="h-5 w-5" /></div>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-400"><TrendingUp className="h-5 w-5" /></div>
               </div>
               <div className="mt-4 flex items-baseline gap-2">
                 <span className="text-3xl font-bold text-cyan-950 dark:text-white">
@@ -479,7 +479,7 @@ export default function AnalyticsPage() {
               <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-cyan-100/50 dark:bg-cyan-400/10 blur-xl" />
               <div className="relative z-10 flex items-center justify-between">
                 <span className="text-sm font-medium text-stone-500 dark:text-stone-400">Commissions This Month</span>
-                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-50 text-cyan-600"><Banknote className="h-5 w-5" /></div>
+                <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-400"><Banknote className="h-5 w-5" /></div>
               </div>
               <div className="relative z-10 mt-4 flex items-baseline gap-2">
                 <span className="text-3xl font-bold text-cyan-950 dark:text-white">
@@ -630,7 +630,7 @@ export default function AnalyticsPage() {
                 />
                 Live in Checkout
               </span>
-              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white dark:bg-cyan-900/60 text-cyan-600 dark:text-cyan-400 shadow-sm">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full bg-white/40 dark:bg-black/40 text-cyan-600 dark:text-cyan-400 shadow-sm ring-1 ring-white/50 dark:ring-white/10">
                 <Activity className="h-5 w-5" />
               </div>
             </div>

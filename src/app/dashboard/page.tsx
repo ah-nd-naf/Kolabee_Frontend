@@ -86,10 +86,10 @@ const activeDeal = {
 
 // ─── Tier Progress Card ────────────────────────────────────────────────────────
 const TIER_COLORS: Record<string, { bg: string; text: string; ring: string }> = {
-  Bronze:   { bg: "bg-orange-100 dark:bg-orange-900/40",  text: "text-orange-700 dark:text-orange-300",  ring: "ring-orange-200 dark:ring-orange-800/50" },
-  Silver:   { bg: "bg-stone-100 dark:bg-stone-800/50",    text: "text-stone-600 dark:text-stone-300",    ring: "ring-stone-200 dark:ring-stone-700/50"   },
-  Gold:     { bg: "bg-amber-100 dark:bg-amber-900/40",    text: "text-amber-700 dark:text-amber-300",    ring: "ring-amber-200 dark:ring-amber-800/50"   },
-  Platinum: { bg: "bg-cyan-100 dark:bg-cyan-900/40",      text: "text-cyan-700 dark:text-cyan-300",      ring: "ring-cyan-200 dark:ring-cyan-800/50"     },
+  Bronze:   { bg: "bg-orange-500/10 dark:bg-orange-500/20",  text: "text-orange-700 dark:text-orange-300",  ring: "ring-orange-500/20 dark:ring-orange-500/30" },
+  Silver:   { bg: "bg-stone-500/10 dark:bg-stone-500/20",    text: "text-stone-700 dark:text-stone-300",    ring: "ring-stone-500/20 dark:ring-stone-500/30"   },
+  Gold:     { bg: "bg-amber-500/10 dark:bg-amber-500/20",    text: "text-amber-700 dark:text-amber-300",    ring: "ring-amber-500/20 dark:ring-amber-500/30"   },
+  Platinum: { bg: "bg-cyan-500/10 dark:bg-cyan-500/20",      text: "text-cyan-700 dark:text-cyan-300",      ring: "ring-cyan-500/20 dark:ring-cyan-500/30"     },
 };
 
 const NEXT_TIER_RATES: Record<string, number> = { Gold: 250, Platinum: 300 };
@@ -138,7 +138,7 @@ function TierProgressCard() {
             </span>
             <span className="text-sm font-bold text-cyan-600 dark:text-cyan-400">{pct.toFixed(0)}%</span>
           </div>
-          <div className="h-3 w-full rounded-full bg-stone-100 dark:bg-stone-800/50 ring-1 ring-stone-200/50 dark:ring-stone-800/50 overflow-hidden">
+          <div className="h-3 w-full rounded-full bg-black/5 dark:bg-white/10 ring-1 ring-black/5 dark:ring-white/10 overflow-hidden">
             <motion.div
               className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 relative overflow-hidden"
               initial={{ width: "0%" }}
@@ -258,7 +258,7 @@ function CollabInvitesList() {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => handleAction(invite.id)}
-                        className="flex items-center gap-1.5 rounded-full bg-cyan-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-cyan-500 transition-colors shadow-sm shadow-cyan-600/20"
+                        className="flex items-center gap-1.5 rounded-full bg-cyan-500/20 px-4 py-1.5 text-sm font-semibold text-cyan-700 dark:text-cyan-300 hover:bg-cyan-500/30 transition-colors shadow-sm"
                       >
                         <Check className="h-3.5 w-3.5" />
                         Accept
@@ -267,7 +267,7 @@ function CollabInvitesList() {
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => handleAction(invite.id)}
-                        className="flex items-center gap-1.5 rounded-full bg-stone-100 dark:bg-stone-800/50 px-4 py-1.5 text-sm font-semibold text-stone-600 dark:text-stone-300 hover:bg-stone-200 dark:hover:bg-stone-700/50 ring-1 ring-stone-200 dark:ring-stone-700 transition-colors"
+                        className="flex items-center gap-1.5 rounded-full bg-black/5 dark:bg-white/10 px-4 py-1.5 text-sm font-semibold text-stone-700 dark:text-stone-300 hover:bg-black/10 dark:hover:bg-white/20 ring-1 ring-black/5 dark:ring-white/10 transition-colors"
                       >
                         <X className="h-3.5 w-3.5" />
                         Decline
@@ -310,7 +310,7 @@ function BusinessOverview({ isLoading }: { isLoading: boolean }) {
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-stone-500 dark:text-stone-400">{stat.label}</span>
-                  <div className={`flex h-10 w-10 items-center justify-center rounded-full ${isLive ? "bg-red-50" : "bg-cyan-50"} ${isLive ? "text-red-500" : "text-cyan-600"}`}>
+                  <div className={`flex h-10 w-10 items-center justify-center rounded-full ${isLive ? "bg-red-500/10" : "bg-cyan-500/10"} ${isLive ? "text-red-500 dark:text-red-400" : "text-cyan-700 dark:text-cyan-400"}`}>
                     <Icon className="h-5 w-5" />
                   </div>
                 </div>
@@ -489,7 +489,7 @@ function CreatorOverview({ isLoading }: { isLoading: boolean }) {
               >
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-stone-500 dark:text-stone-400">{stat.label}</span>
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-50 text-cyan-600">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-400">
                     <Icon className="h-5 w-5" />
                   </div>
                 </div>
@@ -499,7 +499,7 @@ function CreatorOverview({ isLoading }: { isLoading: boolean }) {
                     <CountUp to={stat.value} duration={1300} delay={i * 60 + 150} formatter={stat.format} />
                   </span>
                   {isWithdraw ? (
-                    <span className="text-xs font-semibold text-cyan-600 dark:text-cyan-400 bg-cyan-50 dark:bg-cyan-900/30 px-2 py-0.5 rounded-full ring-1 ring-cyan-100 dark:ring-cyan-900/50 cursor-pointer hover:bg-cyan-100 transition-colors">
+                    <span className="text-xs font-semibold text-cyan-700 dark:text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-full ring-1 ring-cyan-500/20 cursor-pointer hover:bg-cyan-500/20 transition-colors">
                       Withdraw
                     </span>
                   ) : (

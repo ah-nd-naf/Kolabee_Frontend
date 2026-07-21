@@ -41,11 +41,11 @@ export default function PerformancePage() {
 
   const getTierColor = (tier: string) => {
     switch (tier) {
-      case "Platinum": return "bg-cyan-100 text-cyan-800 ring-cyan-200 dark:bg-cyan-900/50 dark:text-cyan-300 dark:ring-cyan-800/50";
-      case "Gold": return "bg-amber-50 text-amber-700 ring-amber-200 dark:bg-amber-900/40 dark:text-amber-300 dark:ring-amber-800/50";
-      case "Silver": return "bg-stone-100 text-stone-700 ring-stone-200 dark:bg-stone-800/50 dark:text-stone-300 dark:ring-stone-700/50";
-      case "Bronze": return "bg-orange-50 text-orange-800 ring-orange-200 dark:bg-orange-900/40 dark:text-orange-300 dark:ring-orange-800/50";
-      default: return "bg-stone-50 text-stone-600 ring-stone-200 dark:bg-stone-900/50 dark:text-stone-400 dark:ring-stone-800/50";
+      case "Platinum": return "bg-cyan-500/10 text-cyan-700 ring-cyan-500/20 dark:bg-cyan-500/20 dark:text-cyan-300 dark:ring-cyan-500/30";
+      case "Gold": return "bg-amber-500/10 text-amber-700 ring-amber-500/20 dark:bg-amber-500/20 dark:text-amber-300 dark:ring-amber-500/30";
+      case "Silver": return "bg-stone-500/10 text-stone-700 ring-stone-500/20 dark:bg-stone-500/20 dark:text-stone-300 dark:ring-stone-500/30";
+      case "Bronze": return "bg-orange-500/10 text-orange-700 ring-orange-500/20 dark:bg-orange-500/20 dark:text-orange-300 dark:ring-orange-500/30";
+      default: return "bg-stone-500/10 text-stone-600 ring-stone-500/20 dark:bg-stone-500/20 dark:text-stone-400 dark:ring-stone-500/30";
     }
   };
 
@@ -163,11 +163,11 @@ export default function PerformancePage() {
                       <motion.div 
                         animate={{ opacity: [0.5, 1, 0.5] }} 
                         transition={{ repeat: Infinity, duration: 2 }}
-                        className="flex h-6 w-6 items-center justify-center rounded-full bg-green-100 text-green-600"
+                        className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/10 text-green-600 dark:text-green-400"
                       >
                         <ArrowUpRight className="h-4 w-4" />
                       </motion.div>
-                      <span className="text-sm font-medium text-green-600">+{partner.trendValue}%</span>
+                      <span className="text-sm font-medium text-green-600 dark:text-green-400">+{partner.trendValue}%</span>
                     </>
                   )}
                   {partner.trend === "down" && (
@@ -175,19 +175,19 @@ export default function PerformancePage() {
                       <motion.div 
                         animate={{ opacity: [0.5, 1, 0.5] }} 
                         transition={{ repeat: Infinity, duration: 2 }}
-                        className="flex h-6 w-6 items-center justify-center rounded-full bg-red-100 text-red-600"
+                        className="flex h-6 w-6 items-center justify-center rounded-full bg-red-500/10 text-red-600 dark:text-red-400"
                       >
                         <ArrowDownRight className="h-4 w-4" />
                       </motion.div>
-                      <span className="text-sm font-medium text-red-600">-{partner.trendValue}%</span>
+                      <span className="text-sm font-medium text-red-600 dark:text-red-400">-{partner.trendValue}%</span>
                     </>
                   )}
                   {partner.trend === "neutral" && (
                     <>
-                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-stone-100 text-stone-500">
+                      <div className="flex h-6 w-6 items-center justify-center rounded-full bg-stone-500/10 text-stone-500 dark:text-stone-400">
                         <Minus className="h-4 w-4" />
                       </div>
-                      <span className="text-sm font-medium text-stone-500">0.0%</span>
+                      <span className="text-sm font-medium text-stone-500 dark:text-stone-400">0.0%</span>
                     </>
                   )}
                 </div>
@@ -200,7 +200,7 @@ export default function PerformancePage() {
                     </button>
                     
                     {/* Hover Dropdown Menu Mockup */}
-                    <div className="absolute right-0 top-full z-10 mt-1 hidden w-40 flex-col rounded-xl border border-stone-200 dark:border-stone-800 bg-white dark:bg-[#0a0f14] p-1 shadow-lg group-hover:flex">
+                    <div className="absolute right-0 top-full z-10 mt-1 hidden w-40 flex-col rounded-xl border border-stone-200/50 dark:border-white/10 bg-white/80 dark:bg-black/60 backdrop-blur-md p-1 shadow-lg group-hover:flex">
                       <button className="flex items-center gap-2 rounded-md px-3 py-2 text-xs font-medium text-stone-600 dark:text-stone-300 hover:bg-stone-50 dark:hover:bg-white/5 hover:text-cyan-700 dark:hover:text-cyan-400">
                         <Settings2 className="h-4 w-4" /> Adjust Rate
                       </button>
