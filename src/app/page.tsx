@@ -468,6 +468,30 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* --- Section Transition 1: Hero to Features (Dark Mode Only) --- */}
+      <div className="relative w-full h-0 hidden dark:block z-20">
+        <div className="absolute top-0 inset-x-0 flex justify-center">
+          <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-teal-900/40 to-transparent" />
+          
+          <motion.div 
+            animate={{ opacity: [0.3, 0.7, 0.3], scaleX: [0.8, 1.2, 0.8] }}
+            transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut" }}
+            className="absolute w-2/3 h-[1px] bg-gradient-to-r from-transparent via-teal-500/80 to-transparent blur-[2px]"
+          />
+          <div className="absolute top-[-1px] w-32 h-[3px] bg-teal-400/80 blur-[3px] rounded-full" />
+          <div className="absolute top-[0px] w-12 h-[1px] bg-white rounded-full" />
+
+          <div className="absolute top-[-2px] inset-x-0 h-[6px] overflow-hidden">
+            <motion.div 
+              animate={{ left: ["-20%", "120%"] }}
+              transition={{ repeat: Infinity, duration: 6, ease: "linear" }}
+              className="absolute top-[1px] w-[15%] h-[2px] bg-gradient-to-r from-transparent via-teal-200 to-transparent blur-[1px]"
+            />
+          </div>
+          <div className="absolute top-[-120px] w-3/4 h-[240px] bg-teal-500/10 blur-[80px] pointer-events-none rounded-full" />
+        </div>
+      </div>
+
       {/* 2. Service Categories Section */}
       <section id="features" className="relative px-6 py-24 sm:py-32 lg:px-8 bg-stone-50 dark:bg-gradient-to-b dark:from-cyan-950/40 dark:to-[#0f1923] overflow-hidden border-t border-stone-200 dark:border-white/5">
         
@@ -498,6 +522,37 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* --- Section Transition: Horizon Glow (Dark Mode Only) --- */}
+      <div className="relative w-full h-0 hidden dark:block z-20">
+        <div className="absolute top-0 inset-x-0 flex justify-center">
+          {/* Base subtle line */}
+          <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-900/40 to-transparent" />
+          
+          {/* Breathing core glow */}
+          <motion.div 
+            animate={{ opacity: [0.3, 0.7, 0.3], scaleX: [0.8, 1.2, 0.8] }}
+            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+            className="absolute w-2/3 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/80 to-transparent blur-[2px]"
+          />
+
+          {/* Central bright hot-spot */}
+          <div className="absolute top-[-1px] w-32 h-[3px] bg-cyan-400/80 blur-[3px] rounded-full" />
+          <div className="absolute top-[0px] w-12 h-[1px] bg-white rounded-full" />
+
+          {/* Shooting energy pulse / comet */}
+          <div className="absolute top-[-2px] inset-x-0 h-[6px] overflow-hidden">
+            <motion.div 
+              animate={{ left: ["-20%", "120%"] }}
+              transition={{ repeat: Infinity, duration: 5, ease: "linear" }}
+              className="absolute top-[1px] w-[15%] h-[2px] bg-gradient-to-r from-transparent via-cyan-100 to-transparent blur-[1px]"
+            />
+          </div>
+          
+          {/* Ambient Up/Down Light Bleed to blend the backgrounds */}
+          <div className="absolute top-[-120px] w-3/4 h-[240px] bg-cyan-500/10 blur-[80px] pointer-events-none rounded-full" />
+        </div>
+      </div>
 
       {/* 3. How It Works Section */}
       <section className="relative px-6 py-24 sm:py-32 lg:px-8 bg-white dark:bg-gradient-to-b dark:from-[#0f1923] dark:to-[#0a0f14] overflow-hidden">
@@ -606,6 +661,30 @@ export default function LandingPage() {
         </div>
       </section>
 
+      {/* --- Section Transition 3: How It Works to Pricing (Dark Mode Only) --- */}
+      <div className="relative w-full h-0 hidden dark:block z-20">
+        <div className="absolute top-0 inset-x-0 flex justify-center">
+          <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-purple-900/40 to-transparent" />
+          
+          <motion.div 
+            animate={{ opacity: [0.3, 0.7, 0.3], scaleX: [0.8, 1.2, 0.8] }}
+            transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut" }}
+            className="absolute w-2/3 h-[1px] bg-gradient-to-r from-transparent via-purple-500/80 to-transparent blur-[2px]"
+          />
+          <div className="absolute top-[-1px] w-32 h-[3px] bg-purple-400/80 blur-[3px] rounded-full" />
+          <div className="absolute top-[0px] w-12 h-[1px] bg-white rounded-full" />
+
+          <div className="absolute top-[-2px] inset-x-0 h-[6px] overflow-hidden">
+            <motion.div 
+              animate={{ left: ["120%", "-20%"] }}
+              transition={{ repeat: Infinity, duration: 4.5, ease: "linear" }}
+              className="absolute top-[1px] w-[15%] h-[2px] bg-gradient-to-l from-transparent via-purple-200 to-transparent blur-[1px]"
+            />
+          </div>
+          <div className="absolute top-[-120px] w-3/4 h-[240px] bg-purple-500/10 blur-[80px] pointer-events-none rounded-full" />
+        </div>
+      </div>
+
       {/* 4. Pricing Section */}
       <section id="pricing" className="relative overflow-hidden bg-dark-section px-6 py-24 sm:py-32 lg:px-8 text-center z-0">
         <div className="absolute top-1/2 left-1/2 -z-10 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/20 blur-[120px]" />
@@ -671,6 +750,30 @@ export default function LandingPage() {
           </motion.div>
         </div>
       </section>
+
+      {/* --- Section Transition 4: Pricing to CTA (Dark Mode Only) --- */}
+      <div className="relative w-full h-0 hidden dark:block z-20">
+        <div className="absolute top-0 inset-x-0 flex justify-center">
+          <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-blue-900/40 to-transparent" />
+          
+          <motion.div 
+            animate={{ opacity: [0.3, 0.7, 0.3], scaleX: [0.8, 1.2, 0.8] }}
+            transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
+            className="absolute w-2/3 h-[1px] bg-gradient-to-r from-transparent via-blue-500/80 to-transparent blur-[2px]"
+          />
+          <div className="absolute top-[-1px] w-32 h-[3px] bg-blue-400/80 blur-[3px] rounded-full" />
+          <div className="absolute top-[0px] w-12 h-[1px] bg-white rounded-full" />
+
+          <div className="absolute top-[-2px] inset-x-0 h-[6px] overflow-hidden">
+            <motion.div 
+              animate={{ left: ["-20%", "120%"] }}
+              transition={{ repeat: Infinity, duration: 5.5, ease: "linear" }}
+              className="absolute top-[1px] w-[15%] h-[2px] bg-gradient-to-r from-transparent via-blue-200 to-transparent blur-[1px]"
+            />
+          </div>
+          <div className="absolute top-[-120px] w-3/4 h-[240px] bg-blue-500/10 blur-[80px] pointer-events-none rounded-full" />
+        </div>
+      </div>
 
       {/* 5. Final CTA Section — White / light section for visual relief */}
       <section className="relative overflow-hidden bg-white">
