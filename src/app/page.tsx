@@ -509,9 +509,23 @@ export default function LandingPage() {
         </div>
 
         <div className="mx-auto max-w-7xl relative z-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: customEasing }} className="mb-16 text-center">
-            <h2 className="font-heading text-3xl font-bold tracking-tight text-cyan-950 sm:text-4xl">How Kolabee works</h2>
-            <p className="mt-4 text-lg text-stone-600">Built to make collaboration seamless, whichever side of the brief you are on.</p>
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: customEasing }} className="mb-16 text-center relative flex flex-col items-center">
+            
+            {/* Glowing Orb Behind Text (Dark Mode Only) */}
+            <motion.div 
+              animate={{ opacity: [0.4, 0.7, 0.4], scale: [0.9, 1.1, 0.9] }} 
+              transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} 
+              className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-48 bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 blur-[60px] rounded-full hidden dark:block pointer-events-none -z-10"
+            />
+
+            <h2 className="relative font-heading text-3xl font-bold tracking-tight text-cyan-950 sm:text-4xl">
+              <span className="relative z-10 dark:drop-shadow-[0_0_15px_rgba(6,182,212,0.6)]">How Kolabee works</span>
+            </h2>
+            <p className="relative mt-4 text-lg text-stone-600 dark:text-cyan-50 max-w-2xl mx-auto">
+              <span className="relative z-10 dark:drop-shadow-[0_0_8px_rgba(103,232,249,0.5)] leading-relaxed">
+                Built to make collaboration seamless, whichever side of the brief you are on.
+              </span>
+            </p>
             
             {/* Interactive Toggle */}
             <div className="mt-8 flex justify-center">
