@@ -68,8 +68,8 @@ export default function CreatorLinksPage() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease: EASE }}
         >
-          <h1 className="font-heading text-3xl font-bold text-cyan-950">My Links</h1>
-          <p className="mt-1 text-sm text-stone-500">
+          <h1 className="font-heading text-3xl font-bold text-cyan-950 dark:text-white">My Links</h1>
+          <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
             Manage your referral links and track your audience conversions.
           </p>
         </motion.div>
@@ -122,20 +122,20 @@ export default function CreatorLinksPage() {
                     variants={cardVariants}
                     whileHover={{ y: -5, boxShadow: "0 16px 32px -8px rgb(8 145 178 / 0.12)" }}
                     transition={{ duration: 0.25, ease: EASE }}
-                    className="flex flex-col rounded-2xl border border-stone-200 bg-white p-5 shadow-sm"
+                    className="flex flex-col rounded-2xl premium-glass p-5 shadow-sm"
                   >
                     <div className="flex items-start justify-between">
                       <div className="flex items-center gap-3">
-                        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${link.status === 'Active' ? 'bg-cyan-50 text-cyan-600' : 'bg-stone-100 text-stone-400'}`}>
+                        <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${link.status === 'Active' ? 'bg-cyan-50 dark:bg-cyan-900/40 text-cyan-600 dark:text-cyan-400' : 'bg-stone-100 dark:bg-stone-800/50 text-stone-400 dark:text-stone-500'}`}>
                           <Link2 className="h-5 w-5" />
                         </div>
                         <div>
-                          <h3 className="font-heading font-semibold text-cyan-950 line-clamp-1">{link.title}</h3>
+                          <h3 className="font-heading font-semibold text-cyan-950 dark:text-white line-clamp-1">{link.title}</h3>
                           <div className="flex items-center gap-2 mt-0.5">
-                            <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${link.status === 'Active' ? 'bg-green-100 text-green-700' : 'bg-stone-100 text-stone-600'}`}>
+                            <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${link.status === 'Active' ? 'bg-green-100 dark:bg-green-900/40 text-green-700 dark:text-green-400 ring-1 ring-green-200 dark:ring-green-800/50' : 'bg-stone-100 dark:bg-stone-800/50 text-stone-600 dark:text-stone-400 ring-1 ring-stone-200 dark:ring-stone-700/50'}`}>
                               {link.status}
                             </span>
-                            <span className="text-xs text-stone-400">{link.createdAt}</span>
+                            <span className="text-xs text-stone-400 dark:text-stone-500">{link.createdAt}</span>
                           </div>
                         </div>
                       </div>
@@ -143,19 +143,19 @@ export default function CreatorLinksPage() {
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         transition={{ duration: 0.15, ease: EASE }}
-                        className="text-stone-400 hover:text-cyan-600 transition-colors shrink-0"
+                        className="text-stone-400 dark:text-stone-500 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors shrink-0"
                       >
                         <MoreVertical className="h-5 w-5" />
                       </motion.button>
                     </div>
 
                     {/* Stats Row — CountUp on numbers */}
-                    <div className="mt-6 flex items-center justify-between border-y border-stone-100 py-4">
-                      <div className="flex flex-col items-center gap-1 w-1/2 border-r border-stone-100">
-                        <span className="flex items-center gap-1 text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    <div className="mt-6 flex items-center justify-between border-y border-stone-100 dark:border-white/5 py-4">
+                      <div className="flex flex-col items-center gap-1 w-1/2 border-r border-stone-100 dark:border-white/5">
+                        <span className="flex items-center gap-1 text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider">
                           <MousePointerClick className="h-3 w-3" /> Clicks
                         </span>
-                        <span className="text-xl font-bold text-cyan-950">
+                        <span className="text-xl font-bold text-cyan-950 dark:text-white">
                           <CountUp
                             to={link.clicks}
                             duration={1300}
@@ -165,10 +165,10 @@ export default function CreatorLinksPage() {
                         </span>
                       </div>
                       <div className="flex flex-col items-center gap-1 w-1/2">
-                        <span className="flex items-center gap-1 text-xs font-medium text-stone-500 uppercase tracking-wider">
+                        <span className="flex items-center gap-1 text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider">
                           <ShoppingCart className="h-3 w-3" /> Orders
                         </span>
-                        <span className="text-xl font-bold text-cyan-950">
+                        <span className="text-xl font-bold text-cyan-950 dark:text-white">
                           <CountUp
                             to={link.orders}
                             duration={1300}
@@ -186,7 +186,7 @@ export default function CreatorLinksPage() {
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.96 }}
                         transition={{ duration: 0.15, ease: EASE }}
-                        className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-stone-50 py-2.5 text-sm font-medium text-stone-700 hover:bg-stone-100 transition-colors"
+                        className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-stone-50 dark:bg-stone-800/50 py-2.5 text-sm font-medium text-stone-700 dark:text-stone-300 hover:bg-stone-100 dark:hover:bg-stone-700/50 ring-1 ring-stone-200 dark:ring-stone-700/50 transition-colors"
                       >
                         <ExternalLink className="h-4 w-4 shrink-0" />
                         Destination
@@ -198,8 +198,8 @@ export default function CreatorLinksPage() {
                         transition={{ duration: 0.15, ease: EASE }}
                         className={`flex flex-1 items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-medium transition-colors ${
                           copiedId === link.id 
-                          ? "bg-green-50 text-green-700 ring-1 ring-green-200" 
-                          : "bg-cyan-50 text-cyan-700 hover:bg-cyan-100"
+                          ? "bg-green-50 dark:bg-green-900/40 text-green-700 dark:text-green-400 ring-1 ring-green-200 dark:ring-green-800/50" 
+                          : "bg-cyan-50 dark:bg-cyan-900/40 text-cyan-700 dark:text-cyan-400 hover:bg-cyan-100 dark:hover:bg-cyan-800/50 ring-1 ring-cyan-200 dark:ring-cyan-800/50"
                         }`}
                       >
                         {copiedId === link.id ? <CheckCircle2 className="h-4 w-4 shrink-0" /> : <Copy className="h-4 w-4 shrink-0" />}
@@ -308,7 +308,7 @@ export default function CreatorLinksPage() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2, ease: EASE }}
               onClick={() => setSelectedLink(null)}
-              className="absolute inset-0 bg-cyan-950/20 backdrop-blur-sm"
+              className="absolute inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm"
             />
             
             {/* Modal Content */}
@@ -317,16 +317,16 @@ export default function CreatorLinksPage() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
               transition={{ duration: 0.3, ease: EASE }}
-              className="relative w-full max-w-lg overflow-hidden rounded-3xl bg-white shadow-2xl shadow-cyan-900/20 ring-1 ring-stone-200"
+              className="relative w-full max-w-lg overflow-hidden rounded-3xl premium-glass shadow-2xl shadow-cyan-900/20 ring-1 ring-stone-200/50 dark:ring-white/10"
             >
-              <div className="border-b border-stone-100 bg-stone-50/50 px-6 py-4 flex items-center justify-between">
-                <h3 className="font-heading text-lg font-bold text-cyan-950">Link Configuration</h3>
+              <div className="border-b border-stone-100/50 dark:border-white/10 bg-white/40 dark:bg-[#0a0f14]/40 px-6 py-4 flex items-center justify-between">
+                <h3 className="font-heading text-lg font-bold text-cyan-950 dark:text-white">Link Configuration</h3>
                 <motion.button 
                   onClick={() => setSelectedLink(null)}
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
                   transition={{ duration: 0.2, ease: EASE }}
-                  className="rounded-full p-1.5 text-stone-400 hover:bg-stone-200 hover:text-stone-700 transition-colors"
+                  className="rounded-full p-1.5 text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-800 hover:text-stone-700 dark:hover:text-stone-200 transition-colors"
                 >
                   <X className="h-5 w-5" />
                 </motion.button>
@@ -334,40 +334,40 @@ export default function CreatorLinksPage() {
               
               <div className="p-6">
                 <div className="mb-6 flex items-center gap-3">
-                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-cyan-100 text-cyan-700">
+                  <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full bg-cyan-100 dark:bg-cyan-900/50 text-cyan-700 dark:text-cyan-300">
                     <Link2 className="h-6 w-6" />
                   </div>
                   <div>
-                    <h4 className="font-semibold text-stone-900">{selectedLink.title}</h4>
-                    <p className="text-sm text-stone-500 line-clamp-1">kolabee.com/l/{selectedLink.code}</p>
+                    <h4 className="font-semibold text-stone-900 dark:text-white">{selectedLink.title}</h4>
+                    <p className="text-sm text-stone-500 dark:text-stone-400 line-clamp-1">kolabee.com/l/{selectedLink.code}</p>
                   </div>
                 </div>
 
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-stone-700 mb-1.5">Destination URL</label>
-                    <div className="flex rounded-lg shadow-sm ring-1 ring-inset ring-stone-300 focus-within:ring-2 focus-within:ring-inset focus-within:ring-cyan-600 sm:max-w-md">
-                      <span className="flex select-none items-center pl-3 text-stone-500 sm:text-sm">https://</span>
+                    <label className="block text-sm font-medium text-stone-700 dark:text-stone-300 mb-1.5">Destination URL</label>
+                    <div className="flex rounded-lg shadow-sm ring-1 ring-inset ring-stone-300 dark:ring-stone-700 focus-within:ring-2 focus-within:ring-inset focus-within:ring-cyan-600 sm:max-w-md bg-white/50 dark:bg-black/20">
+                      <span className="flex select-none items-center pl-3 text-stone-500 dark:text-stone-400 sm:text-sm">https://</span>
                       <input
                         type="text"
                         defaultValue={selectedLink.destination.replace('https://', '')}
-                        className="block flex-1 border-0 bg-transparent py-2.5 pl-1 text-stone-900 placeholder:text-stone-400 focus:ring-0 sm:text-sm sm:leading-6 outline-none"
+                        className="block flex-1 border-0 bg-transparent py-2.5 pl-1 text-stone-900 dark:text-white placeholder:text-stone-400 dark:placeholder:text-stone-600 focus:ring-0 sm:text-sm sm:leading-6 outline-none"
                       />
                     </div>
-                    <p className="mt-2 text-xs text-stone-500">
+                    <p className="mt-2 text-xs text-stone-500 dark:text-stone-400">
                       This is where traffic will be redirected after hitting the Kolabee resolver.
                     </p>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-stone-50 px-6 py-4 flex items-center justify-end gap-3 border-t border-stone-100">
+              <div className="bg-stone-50/50 dark:bg-stone-900/50 px-6 py-4 flex items-center justify-end gap-3 border-t border-stone-100/50 dark:border-white/10">
                 <motion.button 
                   onClick={() => setSelectedLink(null)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.96 }}
                   transition={{ duration: 0.15, ease: EASE }}
-                  className="rounded-lg px-4 py-2.5 text-sm font-medium text-stone-600 hover:bg-stone-200 transition-colors"
+                  className="rounded-lg px-4 py-2.5 text-sm font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-800 transition-colors"
                 >
                   Cancel
                 </motion.button>
