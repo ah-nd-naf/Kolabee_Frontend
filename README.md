@@ -1,8 +1,5 @@
 # Kolabee
 
-![Kolabee Banner](public/globe.svg) 
-*(Note: Replace with actual project banner if available)*
-
 **Kolabee** is a premium Creator & Partner Collaboration Platform designed to connect businesses with top-tier creators for product promotion, photoshoots, and referral programs. 
 
 It features a state-of-the-art web interface built with **Next.js**, leveraging advanced animation techniques, premium glassmorphism aesthetics, and a flawless Light/Dark mode experience.
