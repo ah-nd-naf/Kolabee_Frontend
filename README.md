@@ -74,10 +74,12 @@ Kolabee/
 │   │   ├── dashboard/       # Dashboard routes (business/creator workspaces)
 │   │   ├── globals.css      # Global styles, including the .premium-glass utility
 │   │   ├── layout.tsx       # Root layout and theme provider
-│   │   └── page.tsx         # Premium landing page
+│   │   └── page.tsx         # Premium landing page entrypoint
 │   ├── components/
-│   │   ├── ui/              # Reusable UI components (Command Palette, Wizard, etc.)
-│   │   └── ...
+│   │   ├── dashboard/       # Extracted dashboard shell and pages logic
+│   │   ├── effects/         # Reusable Framer Motion animation effects
+│   │   ├── landing/         # Extracted landing page sections
+│   │   └── ui/              # Reusable UI components (Command Palette, Wizard, etc.)
 │   └── lib/                 # Utility functions and mock data
 ├── public/                  # Static assets
 ├── package.json

@@ -48,6 +48,7 @@ export default function RootLayout({
       lang="en"
       className={cn(spaceGrotesk.variable, dmSans.variable, "font-sans", geist.variable)}
       suppressHydrationWarning
+      data-scroll-behavior="smooth"
     >
       <body className="antialiased">
         <ThemeProvider
