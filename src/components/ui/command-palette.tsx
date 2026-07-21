@@ -1,10 +1,10 @@
-// src/components/ui/command-palette.tsx
+﻿// src/components/ui/command-palette.tsx
 "use client";
 
 import { useEffect, useState } from "react";
 import { Command } from "cmdk";
 import { useRouter } from "next/navigation";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { 
   Search, 
   LayoutDashboard, 
@@ -20,7 +20,7 @@ export function CommandPalette() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
 
-  // Toggle the menu when ⌘K (Mac) or Ctrl+K (Windows) is pressed
+  // Toggle the menu when âŒ˜K (Mac) or Ctrl+K (Windows) is pressed
   useEffect(() => {
     const down = (e: KeyboardEvent) => {
       if (e.key === "k" && (e.metaKey || e.ctrlKey)) {
@@ -42,7 +42,7 @@ export function CommandPalette() {
       {open && (
         <div className="fixed inset-0 z-[100] flex items-start justify-center pt-32 sm:pt-40 px-4">
           {/* Blurred Backdrop */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -51,7 +51,7 @@ export function CommandPalette() {
           />
           
           {/* Palette Container */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.95, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
@@ -135,7 +135,7 @@ export function CommandPalette() {
                 </Command.Group>
               </Command.List>
             </Command>
-          </motion.div>
+          </m.div>
         </div>
       )}
     </AnimatePresence>

@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { PersonaContext } from "@/lib/persona-context";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import {
   LayoutDashboard,
   Link2,
@@ -25,7 +26,7 @@ import { CommandPalette } from "@/components/ui/command-palette";
 import { ThemeToggle, ThemeToggleSimple } from "@/components/ui/theme-toggle";
 import { BriefWizard } from "@/components/ui/brief-wizard";
 
-// Canonical easing curve — [0.16, 1, 0.3, 1]
+// Canonical easing curve â€” [0.16, 1, 0.3, 1]
 const EASE = [0.16, 1, 0.3, 1] as const;
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
@@ -72,7 +73,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         backgroundSize: 'auto, auto, auto, 200px 200px',
       }}
     >
-      {/* ── Logo / Back to Home ── */}
+      {/* â”€â”€ Logo / Back to Home â”€â”€ */}
       <div className="flex h-16 shrink-0 items-center">
         <Link
           href="/"
@@ -81,7 +82,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           onMouseLeave={() => setLogoHovered(false)}
         >
           {/* Hexagon with glow on hover */}
-          <motion.div
+          <m.div
             animate={logoHovered ? {
               filter: "drop-shadow(0 0 8px rgba(34,211,238,0.7))",
               scale: 1.08,
@@ -92,37 +93,37 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             transition={{ duration: 0.25, ease: EASE }}
           >
             <Hexagon className="h-8 w-8 text-cyan-400 fill-cyan-400/20 shrink-0" />
-          </motion.div>
+          </m.div>
 
           {/* Brand name / "Back to site" reveal */}
           <div className="relative flex-1 overflow-hidden h-7">
-            {/* "Kolabee" — slides up+fades out on hover */}
-            <motion.span
+            {/* "Kolabee" â€” slides up+fades out on hover */}
+            <m.span
               animate={logoHovered ? { y: -28, opacity: 0 } : { y: 0, opacity: 1 }}
               transition={{ duration: 0.22, ease: EASE }}
               className="absolute inset-0 flex items-center font-heading text-xl font-bold text-white tracking-tight whitespace-nowrap"
             >
               Kolabee
-            </motion.span>
+            </m.span>
 
-            {/* "← Back to site" — slides up+fades in on hover */}
-            <motion.span
+            {/* "â† Back to site" â€” slides up+fades in on hover */}
+            <m.span
               animate={logoHovered ? { y: 0, opacity: 1 } : { y: 28, opacity: 0 }}
               transition={{ duration: 0.22, ease: EASE }}
               className="absolute inset-0 flex items-center gap-1.5 text-sm font-semibold text-cyan-300 whitespace-nowrap"
             >
               <ArrowLeft className="h-3.5 w-3.5" />
               Back to site
-            </motion.span>
+            </m.span>
           </div>
 
           {/* Small home icon on far right, fades in on hover */}
-          <motion.div
+          <m.div
             animate={logoHovered ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.7 }}
             transition={{ duration: 0.2, ease: EASE }}
           >
             <Home className="h-4 w-4 text-cyan-400" />
-          </motion.div>
+          </m.div>
         </Link>
       </div>
 
@@ -130,7 +131,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="rounded-xl bg-cyan-900/50 p-1 ring-1 ring-cyan-800">
         <div className="relative flex space-x-1">
           {(["business", "creator"] as const).map((p) => (
-            <motion.button
+            <m.button
               key={p}
               onClick={() => setPersona(p)}
               whileTap={{ scale: 0.96 }}
@@ -140,14 +141,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               }`}
             >
               {persona === p && (
-                <motion.div
+                <m.div
                   layoutId="sidebar-active-pill"
                   className="absolute inset-0 rounded-lg bg-cyan-400 shadow-sm"
                   transition={{ type: "spring", bounce: 0.2, duration: 0.5 }}
                 />
               )}
               <span className="relative z-10">{p}</span>
-            </motion.button>
+            </m.button>
           ))}
         </div>
       </div>
@@ -160,13 +161,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 const isActive = pathname === item.href;
                 const Icon = item.icon;
                 return (
-                  <motion.li
+                  <m.li
                     key={item.name}
                     initial={{ opacity: 0, x: -16 }}
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.4, delay: index * 0.05, ease: EASE }}
                   >
-                    <motion.div
+                    <m.div
                       whileHover={{ x: 3 }}
                       whileTap={{ scale: 0.97 }}
                       transition={{ duration: 0.18, ease: EASE }}
@@ -187,15 +188,15 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                         />
                         {item.name}
                         {isActive && (
-                          <motion.span
+                          <m.span
                             layoutId="nav-active-dot"
                             className="ml-auto h-1.5 w-1.5 rounded-full bg-cyan-400 self-center"
                             transition={{ type: "spring", bounce: 0.3, duration: 0.4 }}
                           />
                         )}
                       </Link>
-                    </motion.div>
-                  </motion.li>
+                    </m.div>
+                  </m.li>
                 );
               })}
             </ul>
@@ -207,7 +208,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <ThemeToggle variant="full" />
             </div>
 
-            <motion.div
+            <m.div
               whileHover={{ x: 3 }}
               whileTap={{ scale: 0.97 }}
               transition={{ duration: 0.18, ease: EASE }}
@@ -219,26 +220,28 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 <Settings className="h-5 w-5 shrink-0 text-cyan-400/70 group-hover:text-cyan-400 transition-colors" />
                 Settings
               </Link>
-            </motion.div>
+            </m.div>
 
             <div className="flex items-center gap-x-4 py-3 px-2.5 mt-2 rounded-lg bg-cyan-900/30 ring-1 ring-cyan-800/50">
-              <img
+              <Image
                 className="h-9 w-9 rounded-full bg-cyan-800 object-cover ring-2 ring-cyan-900"
                 src="https://i.pravatar.cc/150?u=kolabee_admin"
                 alt="User avatar"
+                width={36}
+                height={36}
               />
               <div className="flex flex-col">
                 <span className="text-sm font-semibold text-white">Alex Morgan</span>
                 <span className="text-xs text-cyan-400">kolabee.co</span>
               </div>
-              <motion.button
+              <m.button
                 whileHover={{ scale: 1.2, color: "#67e8f9" }}
                 whileTap={{ scale: 0.85 }}
                 transition={{ duration: 0.15, ease: EASE }}
                 className="ml-auto"
               >
                 <LogOut className="h-4 w-4 text-cyan-500 cursor-pointer transition-colors" />
-              </motion.button>
+              </m.button>
             </div>
           </li>
         </ul>
@@ -271,7 +274,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           <Hexagon className="h-6 w-6 text-cyan-600 group-hover:text-cyan-500 transition-colors" />
           <span className="font-heading text-lg font-bold text-cyan-950">Kolabee</span>
         </Link>
-        <motion.button
+        <m.button
           type="button"
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
@@ -281,14 +284,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         >
           <span className="sr-only">Open sidebar</span>
           <Menu className="h-6 w-6" aria-hidden="true" />
-        </motion.button>
+        </m.button>
       </div>
 
       {/* Mobile sidebar overlay */}
       <AnimatePresence>
         {isMobileMenuOpen && (
           <>
-            <motion.div
+            <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -296,7 +299,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               className="fixed inset-0 z-40 bg-cyan-950/80 backdrop-blur-sm lg:hidden"
               onClick={() => setIsMobileMenuOpen(false)}
             />
-            <motion.div
+            <m.div
               initial={{ x: "-100%" }}
               animate={{ x: 0 }}
               exit={{ x: "-100%" }}
@@ -304,7 +307,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               className="fixed inset-y-0 left-0 z-40 w-full max-w-xs flex-col lg:hidden"
             >
               <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
-                <motion.button
+                <m.button
                   type="button"
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
@@ -314,10 +317,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 >
                   <span className="sr-only">Close sidebar</span>
                   <X className="h-6 w-6 text-white" aria-hidden="true" />
-                </motion.button>
+                </m.button>
               </div>
               <SidebarContent />
-            </motion.div>
+            </m.div>
           </>
         )}
       </AnimatePresence>
@@ -326,16 +329,16 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
       <div className="flex-1 lg:pl-72 flex flex-col h-screen relative z-10">
         
         <header className="sticky top-0 z-20 flex shrink-0 items-center justify-between border-b border-stone-200/50 dark:border-white/5 bg-white/60 dark:bg-[#0a0f14]/60 backdrop-blur-xl px-4 py-3 sm:gap-x-6 sm:px-6 lg:px-8">
-          <h1 className="font-heading text-xl font-semibold text-cyan-950 capitalize dark:text-white">
+          <h2 className="font-heading text-xl font-semibold text-cyan-950 capitalize dark:text-white">
             {pathname === '/dashboard' ? 'Overview' : pathname.split('/').pop()}
-          </h1>
+          </h2>
 
           <div className="flex items-center gap-6">
             
             {/* NEW: Post Brief Button (Only visible for business persona) */}
             <AnimatePresence>
               {persona === "business" && (
-                <motion.button
+                <m.button
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   exit={{ opacity: 0, scale: 0.9 }}
@@ -346,13 +349,13 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
                 >
                   <Plus className="h-4 w-4" />
                   <span className="hidden sm:inline">Post Brief</span>
-                </motion.button>
+                </m.button>
               )}
             </AnimatePresence>
 
             <div className="hidden h-6 w-px bg-stone-200 sm:block" />
 
-            <motion.button
+            <m.button
               onClick={triggerCommandPalette}
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.97 }}
@@ -362,14 +365,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <Search className="h-4 w-4" />
               <span>Search...</span>
               <span className="rounded bg-white px-1.5 py-0.5 text-xs font-semibold text-stone-400 ring-1 ring-stone-200 group-hover:text-cyan-600 group-hover:ring-cyan-200 transition-colors">
-                ⌘K
+                âŒ˜K
               </span>
-            </motion.button>
+            </m.button>
 
             {/* Notification bell */}
             <ThemeToggleSimple />
 
-            <motion.button
+            <m.button
               whileHover={{ scale: 1.1 }}
               whileTap={{ scale: 0.9 }}
               transition={{ duration: 0.15, ease: EASE }}
@@ -377,14 +380,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
             >
               <span className="absolute top-1.5 right-1.5 h-2 w-2 rounded-full bg-cyan-500 ring-2 ring-white" />
               <Bell className="h-5 w-5" />
-            </motion.button>
+            </m.button>
           </div>
         </header>
 
         {/* Page content */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8">
           <AnimatePresence mode="wait">
-            <motion.div
+            <m.div
               key={pathname}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
@@ -395,7 +398,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
               <PersonaContext.Provider value={persona}>
                 {children}
               </PersonaContext.Provider>
-            </motion.div>
+            </m.div>
           </AnimatePresence>
         </div>
       </div>

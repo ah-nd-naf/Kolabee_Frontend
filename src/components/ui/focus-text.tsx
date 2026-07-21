@@ -1,6 +1,6 @@
-"use client";
+﻿"use client";
 
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 
 interface FocusTextProps {
   text: string;
@@ -21,7 +21,7 @@ export function FocusText({ text, className = "", delayMs = 0, staggerMs = 30 }:
     <span className={`inline-block ${className}`} aria-hidden="true">
       <span className="sr-only">{text}</span>
       {characters.map((char, index) => (
-        <motion.span
+        <m.span
           key={index}
           initial={{ filter: "blur(8px)", opacity: 0, scale: 0.95 }}
           animate={{ filter: "blur(0px)", opacity: 1, scale: 1 }}
@@ -33,8 +33,9 @@ export function FocusText({ text, className = "", delayMs = 0, staggerMs = 30 }:
           className="inline-block"
         >
           {char === " " ? "\u00A0" : char}
-        </motion.span>
+        </m.span>
       ))}
     </span>
   );
 }
+

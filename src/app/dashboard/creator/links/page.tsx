@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useMemo } from "react";
+import { m, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 import { 
   Link2, 
   Copy, 
@@ -21,7 +22,7 @@ import { LinkCardSkeleton } from "@/components/ui/skeleton";
 // Canonical easing curve
 const EASE = [0.16, 1, 0.3, 1] as const;
 
-// Stagger container — 50ms between cards
+// Stagger container â€” 50ms between cards
 const containerVariants = {
   hidden: { opacity: 0 },
   visible: {
@@ -56,14 +57,14 @@ export default function CreatorLinksPage() {
   };
 
   // Only show active links in the public phone preview
-  const activeLinks = mockCreatorLinks.filter(link => link.status === "Active");
+  const activeLinks = useMemo(() => mockCreatorLinks.filter(link => link.status === "Active"), []);
 
   return (
     <div className="flex flex-col gap-8 pb-10">
       
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease: EASE }}
@@ -72,13 +73,13 @@ export default function CreatorLinksPage() {
           <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
             Manage your referral links and track your audience conversions.
           </p>
-        </motion.div>
-        <motion.div 
+        </m.div>
+        <m.div 
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease: EASE }}
         >
-          <motion.button
+          <m.button
             whileHover={{ scale: 1.04 }}
             whileTap={{ scale: 0.95 }}
             transition={{ duration: 0.18, ease: EASE }}
@@ -86,8 +87,8 @@ export default function CreatorLinksPage() {
           >
             <Plus className="h-4 w-4" />
             <span>Generate New Link</span>
-          </motion.button>
-        </motion.div>
+          </m.button>
+        </m.div>
       </div>
 
       {/* Main Split Layout */}
@@ -96,20 +97,20 @@ export default function CreatorLinksPage() {
         {/* Left Side: Link Roster (Takes up majority of space) */}
         <div className="w-full lg:flex-1">
           {isLoading ? (
-            <motion.div
+            <m.div
               variants={containerVariants}
               initial="hidden"
               animate="visible"
               className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-2"
             >
               {[0, 1, 2].map((i) => (
-                <motion.div key={i} variants={cardVariants}>
+                <m.div key={i} variants={cardVariants}>
                   <LinkCardSkeleton />
-                </motion.div>
+                </m.div>
               ))}
-            </motion.div>
+            </m.div>
           ) : (
-            <motion.div
+            <m.div
               variants={containerVariants}
               initial="hidden"
               animate="visible"
@@ -117,7 +118,7 @@ export default function CreatorLinksPage() {
             >
               <AnimatePresence>
                 {mockCreatorLinks.map((link, index) => (
-                  <motion.div
+                  <m.div
                     key={link.id}
                     variants={cardVariants}
                     whileHover={{ y: -5, boxShadow: "0 16px 32px -8px rgb(8 145 178 / 0.12)" }}
@@ -139,17 +140,17 @@ export default function CreatorLinksPage() {
                           </div>
                         </div>
                       </div>
-                      <motion.button
+                      <m.button
                         whileHover={{ scale: 1.1 }}
                         whileTap={{ scale: 0.9 }}
                         transition={{ duration: 0.15, ease: EASE }}
                         className="text-stone-400 dark:text-stone-500 hover:text-cyan-600 dark:hover:text-cyan-400 transition-colors shrink-0"
                       >
                         <MoreVertical className="h-5 w-5" />
-                      </motion.button>
+                      </m.button>
                     </div>
 
-                    {/* Stats Row — CountUp on numbers */}
+                    {/* Stats Row â€” CountUp on numbers */}
                     <div className="mt-6 flex items-center justify-between border-y border-stone-100 dark:border-white/5 py-4">
                       <div className="flex flex-col items-center gap-1 w-1/2 border-r border-stone-100 dark:border-white/5">
                         <span className="flex items-center gap-1 text-xs font-medium text-stone-500 dark:text-stone-400 uppercase tracking-wider">
@@ -181,7 +182,7 @@ export default function CreatorLinksPage() {
 
                     {/* Action Buttons */}
                     <div className="mt-4 flex items-center gap-2">
-                      <motion.button 
+                      <m.button 
                         onClick={() => setSelectedLink(link)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.96 }}
@@ -190,8 +191,8 @@ export default function CreatorLinksPage() {
                       >
                         <ExternalLink className="h-4 w-4 shrink-0" />
                         Destination
-                      </motion.button>
-                      <motion.button 
+                      </m.button>
+                      <m.button 
                         onClick={() => handleCopy(link.id, link.code)}
                         whileHover={{ scale: 1.02 }}
                         whileTap={{ scale: 0.96 }}
@@ -204,17 +205,17 @@ export default function CreatorLinksPage() {
                       >
                         {copiedId === link.id ? <CheckCircle2 className="h-4 w-4 shrink-0" /> : <Copy className="h-4 w-4 shrink-0" />}
                         {copiedId === link.id ? "Copied!" : "Copy Link"}
-                      </motion.button>
+                      </m.button>
                     </div>
-                  </motion.div>
+                  </m.div>
                 ))}
               </AnimatePresence>
-            </motion.div>
+            </m.div>
           )}
         </div>
 
         {/* Right Side: Smart Link Preview (Mobile Phone Mockup) */}
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.4, ease: EASE }}
@@ -242,23 +243,25 @@ export default function CreatorLinksPage() {
               <div className="relative z-10 flex flex-col px-6 pt-16 pb-10">
                 
                 {/* Creator Public Profile */}
-                <motion.div 
+                <m.div 
                   initial={{ opacity: 0, scale: 0.9 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ duration: 0.5, delay: 0.6, ease: EASE }}
                   className="flex flex-col items-center text-center mb-8"
                 >
-                  <img 
+                  <Image 
                     src="https://i.pravatar.cc/150?u=kolabee_admin" 
                     alt="Alex Morgan" 
+                    width={96}
+                    height={96}
                     className="h-24 w-24 rounded-full object-cover shadow-lg ring-4 ring-white mb-4"
                   />
                   <h2 className="font-heading text-xl font-bold text-cyan-950">Alex Morgan</h2>
                   <p className="mt-1 text-sm font-medium text-stone-500">@kolabee.co</p>
                   <p className="mt-3 text-xs text-stone-600 leading-relaxed px-2">
-                    Creating tech content & reviewing the best gadgets out there. Welcome to my storefront! 🚀
+                    Creating tech content & reviewing the best gadgets out there. Welcome to my storefront! ðŸš€
                   </p>
-                </motion.div>
+                </m.div>
 
                 {/* Simulated Public Links */}
                 <div className="flex flex-col gap-3">
@@ -269,7 +272,7 @@ export default function CreatorLinksPage() {
                     ))
                   ) : (
                     activeLinks.map((link, index) => (
-                      <motion.a
+                      <m.a
                         key={link.id}
                         initial={{ opacity: 0, y: 10 }}
                         animate={{ opacity: 1, y: 0 }}
@@ -280,7 +283,7 @@ export default function CreatorLinksPage() {
                         <span className="relative z-10">{link.title}</span>
                         {/* Hover glow effect */}
                         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-gradient-to-r from-cyan-50 to-transparent transition-opacity" />
-                      </motion.a>
+                      </m.a>
                     ))
                   )}
                 </div>
@@ -294,7 +297,7 @@ export default function CreatorLinksPage() {
               </div>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
 
       {/* Destination Modal */}
@@ -302,7 +305,7 @@ export default function CreatorLinksPage() {
         {selectedLink && (
           <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
             {/* Backdrop */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -312,7 +315,7 @@ export default function CreatorLinksPage() {
             />
             
             {/* Modal Content */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, scale: 0.95, y: 10 }}
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -321,7 +324,7 @@ export default function CreatorLinksPage() {
             >
               <div className="border-b border-stone-100/50 dark:border-white/10 bg-white/40 dark:bg-[#0a0f14]/40 px-6 py-4 flex items-center justify-between">
                 <h3 className="font-heading text-lg font-bold text-cyan-950 dark:text-white">Link Configuration</h3>
-                <motion.button 
+                <m.button 
                   onClick={() => setSelectedLink(null)}
                   whileHover={{ scale: 1.1, rotate: 90 }}
                   whileTap={{ scale: 0.9 }}
@@ -329,7 +332,7 @@ export default function CreatorLinksPage() {
                   className="rounded-full p-1.5 text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-800 hover:text-stone-700 dark:hover:text-stone-200 transition-colors"
                 >
                   <X className="h-5 w-5" />
-                </motion.button>
+                </m.button>
               </div>
               
               <div className="p-6">
@@ -362,7 +365,7 @@ export default function CreatorLinksPage() {
               </div>
 
               <div className="bg-stone-50/50 dark:bg-stone-900/50 px-6 py-4 flex items-center justify-end gap-3 border-t border-stone-100/50 dark:border-white/10">
-                <motion.button 
+                <m.button 
                   onClick={() => setSelectedLink(null)}
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.96 }}
@@ -370,8 +373,8 @@ export default function CreatorLinksPage() {
                   className="rounded-lg px-4 py-2.5 text-sm font-medium text-stone-600 dark:text-stone-400 hover:bg-stone-200 dark:hover:bg-stone-800 transition-colors"
                 >
                   Cancel
-                </motion.button>
-                <motion.button 
+                </m.button>
+                <m.button 
                   onClick={() => setSelectedLink(null)}
                   whileHover={{ scale: 1.04 }}
                   whileTap={{ scale: 0.95 }}
@@ -379,9 +382,9 @@ export default function CreatorLinksPage() {
                   className="rounded-lg bg-cyan-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-cyan-500 transition-colors"
                 >
                   Save Changes
-                </motion.button>
+                </m.button>
               </div>
-            </motion.div>
+            </m.div>
           </div>
         )}
       </AnimatePresence>

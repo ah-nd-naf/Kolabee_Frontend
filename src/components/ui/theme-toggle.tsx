@@ -1,21 +1,21 @@
-// src/components/ui/theme-toggle.tsx
+﻿// src/components/ui/theme-toggle.tsx
 "use client";
 
 import { useTheme } from "next-themes";
 import { useEffect, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { Sun, Moon, Monitor } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
-/* ─────────────────────────────────────────────────────
-   ThemeToggle — a premium animated 3-way switch
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+   ThemeToggle â€” a premium animated 3-way switch
    Light | System | Dark
 
    The pill slides to the active segment. Icons
    morph with a cross-fade. Works in both the
    dashboard sidebar and the landing navbar.
-───────────────────────────────────────────────────── */
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 type Mode = "light" | "system" | "dark";
 
@@ -34,7 +34,7 @@ export function ThemeToggle({ variant = "compact" }: ThemeToggleProps) {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  // Avoid hydration mismatch — render nothing until client-side
+  // Avoid hydration mismatch â€” render nothing until client-side
   useEffect(() => setMounted(true), []);
   if (!mounted) return <ThemeToggleSkeleton variant={variant} />;
 
@@ -67,7 +67,7 @@ export function ThemeToggle({ variant = "compact" }: ThemeToggleProps) {
           >
             {/* Sliding active pill */}
             {isActive && (
-              <motion.div
+              <m.div
                 layoutId="theme-pill"
                 className="absolute inset-0 rounded-full bg-white dark:bg-stone-700 shadow-sm ring-1 ring-stone-200/80 dark:ring-stone-600"
                 transition={{ type: "spring", bounce: 0.25, duration: 0.45 }}
@@ -75,7 +75,7 @@ export function ThemeToggle({ variant = "compact" }: ThemeToggleProps) {
             )}
 
             {/* Icon with scale animation */}
-            <motion.span
+            <m.span
               key={`${value}-icon`}
               className="relative z-10"
               animate={isActive
@@ -85,7 +85,7 @@ export function ThemeToggle({ variant = "compact" }: ThemeToggleProps) {
               transition={{ duration: 0.3, ease: EASE }}
             >
               <Icon className={`${variant === "full" ? "h-3.5 w-3.5" : "h-4 w-4"}`} />
-            </motion.span>
+            </m.span>
 
             {/* Label (full variant only) */}
             {variant === "full" && (
@@ -98,7 +98,7 @@ export function ThemeToggle({ variant = "compact" }: ThemeToggleProps) {
   );
 }
 
-/* ── Compact icon-only toggle (cycles through modes) ── */
+/* â”€â”€ Compact icon-only toggle (cycles through modes) â”€â”€ */
 export function ThemeToggleSimple() {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
@@ -109,7 +109,7 @@ export function ThemeToggleSimple() {
   const isDark = resolvedTheme === "dark";
 
   return (
-    <motion.button
+    <m.button
       onClick={() => setTheme(isDark ? "light" : "dark")}
       whileHover={{ scale: 1.08 }}
       whileTap={{ scale: 0.9 }}
@@ -119,7 +119,7 @@ export function ThemeToggleSimple() {
     >
       <AnimatePresence mode="wait" initial={false}>
         {isDark ? (
-          <motion.span
+          <m.span
             key="moon"
             initial={{ y: 20, opacity: 0, rotate: -90, scale: 0.6 }}
             animate={{ y: 0, opacity: 1, rotate: 0, scale: 1 }}
@@ -128,9 +128,9 @@ export function ThemeToggleSimple() {
             className="absolute"
           >
             <Moon className="h-4 w-4" />
-          </motion.span>
+          </m.span>
         ) : (
-          <motion.span
+          <m.span
             key="sun"
             initial={{ y: 20, opacity: 0, rotate: 180, scale: 0.6 }}
             animate={{ y: 0, opacity: 1, rotate: 0, scale: 1 }}
@@ -139,14 +139,14 @@ export function ThemeToggleSimple() {
             className="absolute"
           >
             <Sun className="h-4 w-4" />
-          </motion.span>
+          </m.span>
         )}
       </AnimatePresence>
-    </motion.button>
+    </m.button>
   );
 }
 
-/* ── Loading skeleton ── */
+/* â”€â”€ Loading skeleton â”€â”€ */
 function ThemeToggleSkeleton({ variant }: { variant: "compact" | "full" }) {
   return (
     <div
@@ -156,3 +156,4 @@ function ThemeToggleSkeleton({ variant }: { variant: "compact" | "full" }) {
     />
   );
 }
+

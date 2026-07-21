@@ -3,6 +3,7 @@ import { Space_Grotesk, DM_Sans, Geist } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
 import { ThemeProvider } from "@/components/ui/theme-provider";
+import { MotionProvider } from "@/components/ui/motion-provider";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -55,7 +56,9 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange={false}
         >
-          {children}
+          <MotionProvider>
+            {children}
+          </MotionProvider>
         </ThemeProvider>
       </body>
     </html>

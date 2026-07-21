@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import { X, ArrowRight, ArrowLeft, Image as ImageIcon, Video, Package, CheckCircle2 } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -96,14 +96,14 @@ export function BriefWizard({ isOpen, onClose }: BriefWizardProps) {
       case 3:
         return (
           <div className="flex flex-col items-center justify-center text-center py-8 space-y-4">
-            <motion.div
+            <m.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               transition={{ type: "spring", bounce: 0.5, duration: 0.6 }}
               className="flex h-16 w-16 items-center justify-center rounded-full bg-green-100 dark:bg-green-900/30 text-green-600 dark:text-green-500"
             >
               <CheckCircle2 className="h-8 w-8" />
-            </motion.div>
+            </m.div>
             <div>
               <h3 className="text-xl font-bold text-cyan-950 dark:text-white font-heading">Brief Posted!</h3>
               <p className="text-sm text-stone-500 dark:text-stone-400 mt-2 max-w-[250px] mx-auto">
@@ -141,7 +141,7 @@ export function BriefWizard({ isOpen, onClose }: BriefWizardProps) {
         <div className="fixed inset-0 z-[100] flex items-center justify-center px-4 sm:px-0">
           
           {/* Backdrop */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -151,7 +151,7 @@ export function BriefWizard({ isOpen, onClose }: BriefWizardProps) {
           />
 
           {/* Modal Container */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.95, y: 10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: 10 }}
@@ -179,7 +179,7 @@ export function BriefWizard({ isOpen, onClose }: BriefWizardProps) {
             {/* Progress Bar */}
             {step < 3 && (
               <div className="h-1 w-full bg-stone-100 dark:bg-white/10">
-                <motion.div 
+                <m.div 
                   initial={{ width: "0%" }}
                   animate={{ width: `${(step / 2) * 100}%` }}
                   transition={{ duration: 0.4, ease: EASE }}
@@ -191,7 +191,7 @@ export function BriefWizard({ isOpen, onClose }: BriefWizardProps) {
             {/* Sliding Content Area */}
             <div className="relative overflow-hidden min-h-[250px] p-6">
               <AnimatePresence custom={direction} mode="wait">
-                <motion.div
+                <m.div
                   key={step}
                   custom={direction}
                   variants={variants}
@@ -202,7 +202,7 @@ export function BriefWizard({ isOpen, onClose }: BriefWizardProps) {
                   className="absolute inset-0 p-6"
                 >
                   {renderStepContent()}
-                </motion.div>
+                </m.div>
               </AnimatePresence>
             </div>
 
@@ -245,9 +245,10 @@ export function BriefWizard({ isOpen, onClose }: BriefWizardProps) {
               )}
             </div>
 
-          </motion.div>
+          </m.div>
         </div>
       )}
     </AnimatePresence>
   );
 }
+

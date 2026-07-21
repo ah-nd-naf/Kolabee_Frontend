@@ -1,8 +1,8 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import {
-  motion,
+  m,
   AnimatePresence,
   useReducedMotion,
   useMotionValue,
@@ -38,107 +38,35 @@ import {
   ChevronDown,
 } from "lucide-react";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import { CountUp } from "@/components/ui/count-up";
 import { Navbar } from "@/components/ui/navbar";
-import { ParticleField } from "@/components/ui/particle-field";
 import { DecodeText } from "@/components/ui/decode-text";
 import { FocusText } from "@/components/ui/focus-text";
 
-// ── Components ──
+// Heavy, purely decorative components â€” lazy-loaded after initial paint
+const ParticleField = dynamic(
+  () => import("@/components/ui/particle-field").then((m) => ({ default: m.ParticleField })),
+  { ssr: false }
+);
+const AnimatedAurora = dynamic(
+  () => import("@/components/ui/animated-aurora").then((m) => ({ default: m.AnimatedAurora })),
+  {
+    ssr: false,
+    // Show a solid background colour while aurora loads (prevents flash of white)
+    loading: () => (
+      <div aria-hidden="true" className="absolute inset-0" style={{ background: "#083344", zIndex: 0 }} />
+    ),
+  }
+);
 
-/* ───────────────────────────────────────────────────
-   ANIMATED AURORA BACKGROUND
-   Three giant cyan blobs drift slowly behind the hero.
-   Inline CSS filter: blur(...) used for guaranteed rendering;
-   Tailwind arbitrary blur values can be unreliable at runtime.
-─────────────────────────────────────────────────── */
-function AnimatedAurora() {
-  const prefersReduced = useReducedMotion();
 
-  const sharedClass = "absolute will-change-transform";
-  const easing = [0.45, 0, 0.55, 1] as [number, number, number, number];
-
-  const blob1Style: React.CSSProperties = {
-    top: "-25%", left: "-15%",
-    width: "80vw", height: "80vw",
-    maxWidth: 900, maxHeight: 900,
-    borderRadius: "50%",
-    background: "radial-gradient(circle at center, rgba(8,145,178,0.55) 0%, rgba(8,145,178,0.18) 45%, transparent 70%)",
-    filter: "blur(90px)",
-  };
-  const blob2Style: React.CSSProperties = {
-    top: "10%", right: "-20%",
-    width: "75vw", height: "75vw",
-    maxWidth: 850, maxHeight: 850,
-    borderRadius: "50%",
-    background: "radial-gradient(circle at center, rgba(34,211,238,0.45) 0%, rgba(34,211,238,0.14) 45%, transparent 70%)",
-    filter: "blur(100px)",
-  };
-  const blob3Style: React.CSSProperties = {
-    bottom: "-30%", left: "10%",
-    width: "70vw", height: "70vw",
-    maxWidth: 800, maxHeight: 800,
-    borderRadius: "50%",
-    background: "radial-gradient(circle at center, rgba(103,232,249,0.40) 0%, rgba(103,232,249,0.12) 45%, transparent 70%)",
-    filter: "blur(110px)",
-  };
-
-  return (
-    <div
-      aria-hidden="true"
-      className="absolute inset-0 overflow-hidden"
-      style={{ background: "#083344", zIndex: 0 }}
-    >
-      {prefersReduced ? (
-        <>
-          <div className={sharedClass} style={blob1Style} />
-          <div className={sharedClass} style={blob2Style} />
-          <div className={sharedClass} style={blob3Style} />
-        </>
-      ) : (
-        <>
-          <motion.div
-            className={sharedClass} style={blob1Style}
-            animate={{ x: ["0%","18%","-6%","0%"], y: ["0%","-14%","10%","0%"], scale: [1, 1.15, 0.88, 1] }}
-            transition={{ duration: 24, ease: easing, repeat: Infinity, repeatType: "mirror" }}
-          />
-          <motion.div
-            className={sharedClass} style={blob2Style}
-            animate={{ x: ["0%","-14%","12%","0%"], y: ["0%","16%","-8%","0%"], scale: [1, 0.85, 1.12, 1] }}
-            transition={{ duration: 30, ease: easing, repeat: Infinity, repeatType: "mirror" }}
-          />
-          <motion.div
-            className={sharedClass} style={blob3Style}
-            animate={{ x: ["0%","10%","-18%","0%"], y: ["0%","8%","-12%","0%"], scale: [1, 1.2, 0.82, 1] }}
-            transition={{ duration: 18, ease: easing, repeat: Infinity, repeatType: "mirror" }}
-          />
-        </>
-      )}
-
-      {/* Centre vignette — keeps headline readable */}
-      <div
-        className="absolute inset-0"
-        style={{ background: "radial-gradient(ellipse 60% 55% at 50% 50%, transparent 30%, rgba(8,51,68,0.55) 100%)" }}
-      />
-
-      {/* SVG Noise grain ~4% */}
-      <div
-        className="absolute inset-0 opacity-[0.04] mix-blend-overlay pointer-events-none"
-        style={{
-          backgroundImage: `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)'/%3E%3C/svg%3E")`,
-          backgroundRepeat: "repeat",
-        }}
-      />
-    </div>
-  );
-}
-
-/* ───────────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    CURSOR GLOW
    A large soft radial glow that follows the cursor
    with spring-based lag (stiffness:60, damping:20).
-   Disabled: touch devices & prefers-reduced-motion.
-─────────────────────────────────────────────────── */
+   Disabled: touch devices & prefers-reduced-m.
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 function CursorGlow({ containerRef }: { containerRef: React.RefObject<HTMLElement | null> }) {
   const prefersReduced = useReducedMotion();
 
@@ -146,7 +74,7 @@ function CursorGlow({ containerRef }: { containerRef: React.RefObject<HTMLElemen
   const rawX = useMotionValue(-999);
   const rawY = useMotionValue(-999);
 
-  // Spring-smoothed position — gives the "catching up" feel
+  // Spring-smoothed position â€” gives the "catching up" feel
   const springConfig = { stiffness: 60, damping: 20, mass: 0.8 };
   const x = useSpring(rawX, springConfig);
   const y = useSpring(rawY, springConfig);
@@ -154,7 +82,7 @@ function CursorGlow({ containerRef }: { containerRef: React.RefObject<HTMLElemen
   useEffect(() => {
     if (prefersReduced) return;
 
-    // Check for coarse pointer (touch-only device) — skip glow
+    // Check for coarse pointer (touch-only device) â€” skip glow
     const isTouch = window.matchMedia("(pointer: coarse)").matches;
     if (isTouch) return;
 
@@ -184,12 +112,12 @@ function CursorGlow({ containerRef }: { containerRef: React.RefObject<HTMLElemen
   if (prefersReduced) return null;
 
   return (
-    <motion.div
+    <m.div
       aria-hidden="true"
       className="pointer-events-none absolute inset-0 z-[2] overflow-hidden"
       style={{ top: 0, left: 0 }}
     >
-      <motion.div
+      <m.div
         style={{
           x,
           y,
@@ -205,7 +133,7 @@ function CursorGlow({ containerRef }: { containerRef: React.RefObject<HTMLElemen
           pointerEvents: "none",
         }}
       />
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -214,14 +142,14 @@ export default function LandingPage() {
   // Ref passed to CursorGlow so it can track mouse position relative to the hero section
   const heroRef = useRef<HTMLElement>(null);
 
-  // ── Consistent easing [0.16, 1, 0.3, 1] applied to ALL animations ──
+  // â”€â”€ Consistent easing [0.16, 1, 0.3, 1] applied to ALL animations â”€â”€
   const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
   // Keep alias for sections below that already use customEasing
   const customEasing = EASE;
 
-  // ── Per-element staggered hero entrance ──────────────────────────────
+  // â”€â”€ Per-element staggered hero entrance â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   // Each element is animated individually so we can control order precisely:
-  // badge → h1 line 1 → h1 line 2 → subtext → CTAs
+  // badge â†’ h1 line 1 â†’ h1 line 2 â†’ subtext â†’ CTAs
   // Using delay prop rather than stagger parent so each is independently tuned.
   const heroItem = (delay: number) => ({
     hidden: { opacity: 0, y: 16 },
@@ -278,16 +206,16 @@ export default function LandingPage() {
     <main className="min-h-screen bg-stone-50 dark:bg-[#0a0f14] text-stone-900 dark:text-slate-100">
       <Navbar />
       
-      {/* ─────────────────────────────────────────────
+      {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
          1. Hero Section
-         z-layers (bottom → top):
+         z-layers (bottom â†’ top):
            [0]  AnimatedAurora (dark teal base + blobs)
            [1]  ParticleField canvas
            [2]  CursorGlow (spring-following radial)
            [3]  HeroGrain (animated noise texture)
            [10] Hero text / badge / CTAs
            [10] Scroll indicator
-      ───────────────────────────────────────────── */}
+      â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <section
         ref={heroRef}
         className="relative overflow-hidden px-6 flex flex-col justify-center items-center text-center lg:px-8"
@@ -309,10 +237,10 @@ export default function LandingPage() {
           className="z-[1]"
         />
 
-        {/* [2] Cursor glow — spring-follow, above particles */}
+        {/* [2] Cursor glow â€” spring-follow, above particles */}
         <CursorGlow containerRef={heroRef} />
 
-        {/* [3] Animated film-grain texture — above glow, below text */}
+        {/* [3] Animated film-grain texture â€” above glow, below text */}
         <div
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-[3] opacity-[0.035] mix-blend-screen"
@@ -323,11 +251,11 @@ export default function LandingPage() {
           }}
         />
 
-        {/* Hero content — z-10 */}
+        {/* Hero content â€” z-10 */}
         <div className="mx-auto max-w-3xl relative z-10">
 
-          {/* Badge pill — animates in first, then breathes */}
-          <motion.div
+          {/* Badge pill â€” animates in first, then breathes */}
+          <m.div
             variants={heroItem(0.05)}
             initial="hidden"
             animate="visible"
@@ -335,28 +263,28 @@ export default function LandingPage() {
           >
             <span className="inline-flex items-center gap-2 rounded-full bg-cyan-900/50 px-4 py-1.5 text-sm font-medium text-cyan-200 ring-1 ring-cyan-700/50 backdrop-blur-sm">
               {/* Sparkle icon breathes on an infinite 2.5s loop */}
-              <motion.span
+              <m.span
                 animate={{ opacity: [0.5, 1, 0.5], scale: [0.9, 1.15, 0.9] }}
                 transition={{ duration: 2.5, ease: "easeInOut", repeat: Infinity }}
                 className="flex"
               >
                 <Sparkles className="h-4 w-4" />
-              </motion.span>
+              </m.span>
               <span>Matched to your brand, not just your budget.</span>
             </span>
-          </motion.div>
+          </m.div>
 
-          {/* H1 — two-beat reveal: line 1 then line 2 with gradient on second line */}
+          {/* H1 â€” two-beat reveal: line 1 then line 2 with gradient on second line */}
           <h1 className="font-heading text-5xl font-bold tracking-tight text-white sm:text-7xl" style={{ textShadow: "0 0 80px rgba(34,211,238,0.15)" }}>
-            <motion.span
+            <m.span
               variants={heroItem(0.16)}
               initial="hidden"
               animate="visible"
               className="block"
             >
               <FocusText text="Everything a product" delayMs={200} staggerMs={40} />
-            </motion.span>
-            <motion.span
+            </m.span>
+            <m.span
               variants={heroItem(0.27)}
               initial="hidden"
               animate="visible"
@@ -375,11 +303,11 @@ export default function LandingPage() {
                   backgroundClip: "text",
                 }}
               />
-            </motion.span>
+            </m.span>
           </h1>
 
-          {/* Subtext — animates after headline */}
-          <motion.p
+          {/* Subtext â€” animates after headline */}
+          <m.p
             variants={heroItem(0.40)}
             initial="hidden"
             animate="visible"
@@ -387,17 +315,17 @@ export default function LandingPage() {
           >
             Kolabee connects businesses with top-tier creators for product promotion,
             photoshoots, and referral programs. One simple platform. Shared data.
-          </motion.p>
+          </m.p>
 
-          {/* CTAs — animate last */}
-          <motion.div
+          {/* CTAs â€” animate last */}
+          <m.div
             variants={heroItem(0.52)}
             initial="hidden"
             animate="visible"
             className="mt-10 flex items-center justify-center gap-x-6"
           >
-            {/* Primary button — glow on hover, arrow nudge */}
-            <motion.div
+            {/* Primary button â€” glow on hover, arrow nudge */}
+            <m.div
               whileHover={{
                 scale: 1.03,
                 boxShadow: "0 0 28px 6px rgba(34,211,238,0.35), 0 4px 20px rgba(34,211,238,0.2)",
@@ -411,7 +339,7 @@ export default function LandingPage() {
                 className="group flex items-center gap-2 rounded-full bg-cyan-500 px-6 py-3.5 text-sm font-semibold text-white shadow-lg shadow-cyan-500/30 hover:bg-cyan-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-cyan-400 transition-colors"
               >
                 Post a Brief
-                <motion.span
+                <m.span
                   className="flex"
                   variants={{ rest: { x: 0 }, hover: { x: 4 } }}
                   initial="rest"
@@ -419,12 +347,12 @@ export default function LandingPage() {
                   transition={{ duration: 0.18, ease: EASE }}
                 >
                   <ArrowRight className="h-4 w-4" />
-                </motion.span>
+                </m.span>
               </Link>
-            </motion.div>
+            </m.div>
 
-            {/* Secondary text link — arrow nudge + animated underline draw */}
-            <motion.div
+            {/* Secondary text link â€” arrow nudge + animated underline draw */}
+            <m.div
               initial="rest"
               whileHover="hover"
               animate="rest"
@@ -435,36 +363,36 @@ export default function LandingPage() {
                 className="flex items-center gap-1.5 text-sm font-semibold leading-6 text-cyan-100 hover:text-white transition-colors"
               >
                 Join as a Creator
-                <motion.span
+                <m.span
                   className="flex"
                   variants={{ rest: { x: 0 }, hover: { x: 4 } }}
                   transition={{ duration: 0.18, ease: EASE }}
                 >
                   <ArrowRight className="h-4 w-4" />
-                </motion.span>
+                </m.span>
               </Link>
               {/* Underline draws left-to-right on hover */}
-              <motion.span
+              <m.span
                 className="absolute -bottom-0.5 left-0 h-px bg-cyan-300"
                 variants={{ rest: { scaleX: 0, originX: 0 }, hover: { scaleX: 1, originX: 0 } }}
                 transition={{ duration: 0.25, ease: EASE }}
                 style={{ width: "100%" }}
               />
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         </div>
 
         {/* Scroll Indicator */}
         <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1.5 cursor-pointer opacity-70 hover:opacity-100 transition-opacity z-10">
           <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-cyan-300">Scroll Down</span>
-          <motion.button
+          <m.button
             animate={{ y: [0, 6, 0] }}
             transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
             className="flex h-8 w-8 items-center justify-center rounded-full bg-cyan-900/40 text-cyan-400 ring-1 ring-cyan-800 backdrop-blur-sm"
             onClick={() => document.getElementById('features')?.scrollIntoView({ behavior: 'smooth' })}
           >
             <ChevronDown className="h-4 w-4" />
-          </motion.button>
+          </m.button>
         </div>
       </section>
 
@@ -473,7 +401,7 @@ export default function LandingPage() {
         <div className="absolute top-0 inset-x-0 flex justify-center">
           <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-teal-900/40 to-transparent" />
           
-          <motion.div 
+          <m.div 
             animate={{ opacity: [0.3, 0.7, 0.3], scaleX: [0.8, 1.2, 0.8] }}
             transition={{ repeat: Infinity, duration: 4.5, ease: "easeInOut" }}
             className="absolute w-2/3 h-[1px] bg-gradient-to-r from-transparent via-teal-500/80 to-transparent blur-[2px]"
@@ -482,7 +410,7 @@ export default function LandingPage() {
           <div className="absolute top-[0px] w-12 h-[1px] bg-white rounded-full" />
 
           <div className="absolute top-[-2px] inset-x-0 h-[6px] overflow-hidden">
-            <motion.div 
+            <m.div 
               animate={{ left: ["-20%", "120%"] }}
               transition={{ repeat: Infinity, duration: 6, ease: "linear" }}
               className="absolute top-[1px] w-[15%] h-[2px] bg-gradient-to-r from-transparent via-teal-200 to-transparent blur-[1px]"
@@ -502,24 +430,24 @@ export default function LandingPage() {
         </div>
 
         <div className="mx-auto max-w-7xl relative z-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: customEasing }} className="mb-16 text-center">
+          <m.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: customEasing }} className="mb-16 text-center">
             <h2 className="font-heading text-3xl font-bold tracking-tight text-cyan-950 sm:text-4xl">One platform. Four ways to grow.</h2>
             <p className="mt-4 text-lg text-stone-600">Stop juggling spreadsheets and DMs. Handle every type of creator collaboration in one place.</p>
-          </motion.div>
-          <motion.div variants={servicesContainerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          </m.div>
+          <m.div variants={servicesContainerVariants} initial="hidden" whileInView="visible" viewport={{ once: true, margin: "-100px" }} className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {services.map((service) => {
               const Icon = service.icon;
               return (
-                <motion.div key={service.title} variants={serviceCardVariants} whileHover={{ y: -8 }} className="premium-glass group relative rounded-2xl p-8 transition-all">
+                <m.div key={service.title} variants={serviceCardVariants} whileHover={{ y: -8 }} className="premium-glass group relative rounded-2xl p-8 transition-all">
                   <div className="mb-6 inline-flex h-12 w-12 items-center justify-center rounded-xl bg-cyan-50 dark:bg-cyan-500/10 text-cyan-600 dark:text-cyan-400 ring-1 ring-cyan-100 dark:ring-cyan-500/20 transition-colors group-hover:bg-cyan-600 group-hover:text-white dark:group-hover:bg-cyan-500">
                     <Icon className="h-6 w-6" />
                   </div>
                   <h3 className="font-heading text-lg font-semibold text-cyan-950">{service.title}</h3>
                   <p className="mt-3 text-sm text-stone-600 leading-relaxed">{service.description}</p>
-                </motion.div>
+                </m.div>
               );
             })}
-          </motion.div>
+          </m.div>
         </div>
       </section>
 
@@ -530,7 +458,7 @@ export default function LandingPage() {
           <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-cyan-900/40 to-transparent" />
           
           {/* Breathing core glow */}
-          <motion.div 
+          <m.div 
             animate={{ opacity: [0.3, 0.7, 0.3], scaleX: [0.8, 1.2, 0.8] }}
             transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
             className="absolute w-2/3 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/80 to-transparent blur-[2px]"
@@ -542,7 +470,7 @@ export default function LandingPage() {
 
           {/* Shooting energy pulse / comet */}
           <div className="absolute top-[-2px] inset-x-0 h-[6px] overflow-hidden">
-            <motion.div 
+            <m.div 
               animate={{ left: ["-20%", "120%"] }}
               transition={{ repeat: Infinity, duration: 5, ease: "linear" }}
               className="absolute top-[1px] w-[15%] h-[2px] bg-gradient-to-r from-transparent via-cyan-100 to-transparent blur-[1px]"
@@ -564,10 +492,10 @@ export default function LandingPage() {
         </div>
 
         <div className="mx-auto max-w-7xl relative z-10">
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: customEasing }} className="mb-16 text-center relative flex flex-col items-center">
+          <m.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true, margin: "-100px" }} transition={{ duration: 0.8, ease: customEasing }} className="mb-16 text-center relative flex flex-col items-center">
             
             {/* Glowing Orb Behind Text (Dark Mode Only) */}
-            <motion.div 
+            <m.div 
               animate={{ opacity: [0.4, 0.7, 0.4], scale: [0.9, 1.1, 0.9] }} 
               transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }} 
               className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[120%] h-48 bg-gradient-to-r from-cyan-500/20 via-blue-500/20 to-purple-500/20 blur-[60px] rounded-full hidden dark:block pointer-events-none -z-10"
@@ -594,7 +522,7 @@ export default function LandingPage() {
                     }`}
                   >
                     {activePersona === persona && (
-                      <motion.div
+                      <m.div
                         layoutId="active-pill"
                         className="absolute inset-0 rounded-full bg-white dark:bg-cyan-900/60 shadow-sm ring-1 ring-stone-200/50 dark:ring-cyan-800/50"
                         transition={{ type: "spring", bounce: 0.2, duration: 0.6 }}
@@ -605,12 +533,12 @@ export default function LandingPage() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Animated Steps Container */}
           <div className="relative mx-auto max-w-5xl">
             <AnimatePresence mode="wait">
-              <motion.div
+              <m.div
                 key={activePersona}
                 variants={{
                   hidden: { opacity: 0 },
@@ -626,7 +554,7 @@ export default function LandingPage() {
                 {flowData[activePersona].map((step, index) => {
                   const Icon = step.icon;
                   return (
-                    <motion.div 
+                    <m.div 
                       key={step.step} 
                       variants={{
                         hidden: { opacity: 0, x: -40 },
@@ -639,23 +567,23 @@ export default function LandingPage() {
                       </div>
                       {/* Next Step Indicator */}
                       {index !== flowData[activePersona].length - 1 && (
-                        <motion.div 
+                        <m.div 
                           animate={{ x: [0, 5, 0] }}
                           transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
                           className="absolute top-1/2 -right-[20px] hidden md:flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white dark:bg-[#121c26] shadow-md ring-1 ring-stone-200/50 dark:ring-white/10 z-20 text-cyan-600 dark:text-cyan-500"
                         >
                           <ArrowRight className="h-5 w-5" />
-                        </motion.div>
+                        </m.div>
                       )}
                       <h3 className="font-heading text-xl font-bold text-cyan-950">
                         <span className="mb-2 block text-sm font-medium text-cyan-600">Step {step.step}</span>
                         {step.title}
                       </h3>
                       <p className="mt-3 text-stone-600">{step.description}</p>
-                    </motion.div>
+                    </m.div>
                   );
                 })}
-              </motion.div>
+              </m.div>
             </AnimatePresence>
           </div>
         </div>
@@ -666,7 +594,7 @@ export default function LandingPage() {
         <div className="absolute top-0 inset-x-0 flex justify-center">
           <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-purple-900/40 to-transparent" />
           
-          <motion.div 
+          <m.div 
             animate={{ opacity: [0.3, 0.7, 0.3], scaleX: [0.8, 1.2, 0.8] }}
             transition={{ repeat: Infinity, duration: 3.5, ease: "easeInOut" }}
             className="absolute w-2/3 h-[1px] bg-gradient-to-r from-transparent via-purple-500/80 to-transparent blur-[2px]"
@@ -675,7 +603,7 @@ export default function LandingPage() {
           <div className="absolute top-[0px] w-12 h-[1px] bg-white rounded-full" />
 
           <div className="absolute top-[-2px] inset-x-0 h-[6px] overflow-hidden">
-            <motion.div 
+            <m.div 
               animate={{ left: ["120%", "-20%"] }}
               transition={{ repeat: Infinity, duration: 4.5, ease: "linear" }}
               className="absolute top-[1px] w-[15%] h-[2px] bg-gradient-to-l from-transparent via-purple-200 to-transparent blur-[1px]"
@@ -690,7 +618,7 @@ export default function LandingPage() {
         <div className="absolute top-1/2 left-1/2 -z-10 h-[600px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/20 blur-[120px]" />
 
         <div className="mx-auto max-w-4xl relative z-10">
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -702,9 +630,9 @@ export default function LandingPage() {
             <p className="mt-4 text-lg text-cyan-200">
               No subscriptions. No listing fees. We only make money when you do.
             </p>
-          </motion.div>
+          </m.div>
 
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0, y: 50 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: "-100px" }}
@@ -747,7 +675,7 @@ export default function LandingPage() {
                 </li>
               </ul>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </section>
 
@@ -756,7 +684,7 @@ export default function LandingPage() {
         <div className="absolute top-0 inset-x-0 flex justify-center">
           <div className="absolute w-full h-[1px] bg-gradient-to-r from-transparent via-blue-900/40 to-transparent" />
           
-          <motion.div 
+          <m.div 
             animate={{ opacity: [0.3, 0.7, 0.3], scaleX: [0.8, 1.2, 0.8] }}
             transition={{ repeat: Infinity, duration: 4, ease: "easeInOut" }}
             className="absolute w-2/3 h-[1px] bg-gradient-to-r from-transparent via-blue-500/80 to-transparent blur-[2px]"
@@ -765,7 +693,7 @@ export default function LandingPage() {
           <div className="absolute top-[0px] w-12 h-[1px] bg-white rounded-full" />
 
           <div className="absolute top-[-2px] inset-x-0 h-[6px] overflow-hidden">
-            <motion.div 
+            <m.div 
               animate={{ left: ["-20%", "120%"] }}
               transition={{ repeat: Infinity, duration: 5.5, ease: "linear" }}
               className="absolute top-[1px] w-[15%] h-[2px] bg-gradient-to-r from-transparent via-blue-200 to-transparent blur-[1px]"
@@ -775,13 +703,13 @@ export default function LandingPage() {
         </div>
       </div>
 
-      {/* 5. Final CTA Section — White / light section for visual relief */}
+      {/* 5. Final CTA Section â€” White / light section for visual relief */}
       <section className="relative overflow-hidden bg-white">
 
-        {/* Decorative top divider — thin cyan line */}
+        {/* Decorative top divider â€” thin cyan line */}
         <div className="absolute inset-x-0 top-0 h-px bg-gradient-to-r from-transparent via-cyan-300 to-transparent opacity-60" />
 
-        {/* Soft radial colour bleed — top-right corner accent */}
+        {/* Soft radial colour bleed â€” top-right corner accent */}
         <div aria-hidden className="pointer-events-none absolute inset-0 overflow-hidden">
           <div className="absolute -right-40 -top-40 h-[500px] w-[500px] rounded-full bg-cyan-50 opacity-80 blur-[80px]" />
           <div className="absolute -left-40 bottom-0 h-[400px] w-[400px] rounded-full bg-stone-100 blur-[100px]" />
@@ -790,8 +718,8 @@ export default function LandingPage() {
         <div className="relative z-10 mx-auto max-w-7xl px-6 py-24 sm:py-32 lg:px-8">
           <div className="grid grid-cols-1 items-center gap-16 lg:grid-cols-2">
 
-            {/* ── LEFT: Copy + CTAs ── */}
-            <motion.div
+            {/* â”€â”€ LEFT: Copy + CTAs â”€â”€ */}
+            <m.div
               initial={{ opacity: 0, x: -40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: '-80px' }}
@@ -803,7 +731,7 @@ export default function LandingPage() {
                 <span className="text-xs font-semibold uppercase tracking-widest text-cyan-600">Ready when you are</span>
               </div>
 
-              {/* Headline — dark ink + cyan gradient accent */}
+              {/* Headline â€” dark ink + cyan gradient accent */}
               <h2 className="font-heading text-4xl font-bold leading-tight tracking-tight text-cyan-950 sm:text-5xl lg:text-[3.25rem]">
                 Your next deal<br />
                 <span className="bg-gradient-to-r from-cyan-500 to-cyan-700 bg-clip-text text-transparent">
@@ -811,12 +739,12 @@ export default function LandingPage() {
                 </span>
               </h2>
 
-              {/* Body copy — warm stone */}
+              {/* Body copy â€” warm stone */}
               <p className="mt-6 max-w-lg text-base leading-relaxed text-stone-500">
-                Whether you're launching a new product or looking for your next brand partnership — Kolabee is where the work gets done, transparently.
+                Whether you're launching a new product or looking for your next brand partnership â€” Kolabee is where the work gets done, transparently.
               </p>
 
-              {/* Trust badges — light cyan tints */}
+              {/* Trust badges â€” light cyan tints */}
               <div className="mt-8 flex flex-wrap gap-3">
                 {[
                   { icon: BadgeCheck, label: 'No subscription fees' },
@@ -832,7 +760,7 @@ export default function LandingPage() {
 
               {/* CTA buttons */}
               <div className="mt-10 flex flex-col gap-4 sm:flex-row">
-                <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+                <m.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
                   <Link
                     href="/dashboard"
                     className="group inline-flex items-center gap-2 rounded-full bg-cyan-600 px-7 py-3.5 text-sm font-bold text-white shadow-lg shadow-cyan-600/20 transition-all hover:bg-cyan-500"
@@ -840,9 +768,9 @@ export default function LandingPage() {
                     Post a Brief
                     <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </Link>
-                </motion.div>
+                </m.div>
 
-                <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+                <m.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
                   <Link
                     href="/dashboard"
                     className="inline-flex items-center gap-2 rounded-full bg-stone-100 px-7 py-3.5 text-sm font-semibold text-stone-700 ring-1 ring-stone-200 transition-all hover:bg-stone-200"
@@ -850,12 +778,12 @@ export default function LandingPage() {
                     Join as a Creator
                     <ArrowRight className="h-4 w-4" />
                   </Link>
-                </motion.div>
+                </m.div>
               </div>
-            </motion.div>
+            </m.div>
 
-            {/* ── RIGHT: Proof cards stack — white cards with shadows ── */}
-            <motion.div
+            {/* â”€â”€ RIGHT: Proof cards stack â€” white cards with shadows â”€â”€ */}
+            <m.div
               initial={{ opacity: 0, x: 40 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, margin: '-80px' }}
@@ -863,7 +791,7 @@ export default function LandingPage() {
               className="flex flex-col gap-4"
             >
               {/* Card 1: creator stat */}
-              <motion.div
+              <m.div
                 whileHover={{ y: -5, scale: 1.01 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: 'spring', stiffness: 300, ease: customEasing }}
@@ -884,10 +812,10 @@ export default function LandingPage() {
                     <TrendingUp className="h-3 w-3" /> +24%
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
 
-              {/* Card 2: brand stat — offset right for depth */}
-              <motion.div
+              {/* Card 2: brand stat â€” offset right for depth */}
+              <m.div
                 whileHover={{ y: -5, scale: 1.01 }}
                 whileTap={{ scale: 0.98 }}
                 transition={{ type: 'spring', stiffness: 300, ease: customEasing }}
@@ -908,10 +836,10 @@ export default function LandingPage() {
                     <TrendingUp className="h-3 w-3" /> +18%
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
 
               {/* Card 3: rating strip */}
-              <motion.div
+              <m.div
                 whileHover={{ y: -5, scale: 1.01 }}
                 transition={{ type: 'spring', stiffness: 300 }}
                 className="group relative overflow-hidden rounded-2xl bg-gradient-to-br from-cyan-950 to-cyan-900 p-5"
@@ -941,20 +869,20 @@ export default function LandingPage() {
                     Trusted platform
                   </span>
                 </div>
-              </motion.div>
-            </motion.div>
+              </m.div>
+            </m.div>
 
           </div>
         </div>
       </section>
 
-      {/* ────────────────────────────────────────
+      {/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
           FOOTER
-      ──────────────────────────────────────── */}
+      â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */}
       <footer className="relative overflow-hidden bg-dark-section">
 
         {/* Pulsing shimmer border */}
-        <motion.div
+        <m.div
           className="h-px w-full bg-gradient-to-r from-transparent via-cyan-400 to-transparent"
           animate={{ opacity: [0.25, 0.85, 0.25] }}
           transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
@@ -966,7 +894,7 @@ export default function LandingPage() {
           <div className="absolute -right-64 bottom-0 h-[500px] w-[500px] rounded-full bg-cyan-700/[0.06] blur-[120px]" />
         </div>
 
-        {/* Giant KOLABEE watermark — anchored to the bottom */}
+        {/* Giant KOLABEE watermark â€” anchored to the bottom */}
         <div
           aria-hidden
           className="pointer-events-none absolute inset-x-0 bottom-0 flex select-none items-end justify-center overflow-hidden"
@@ -979,13 +907,13 @@ export default function LandingPage() {
           </span>
         </div>
 
-        {/* ── Main content ── */}
+        {/* â”€â”€ Main content â”€â”€ */}
         <div className="relative z-10 mx-auto max-w-7xl px-6 pb-10 pt-20 lg:px-8">
 
           {/* Top grid: Brand + Nav */}
           <div className="grid grid-cols-1 gap-16 lg:grid-cols-5">
 
-            {/* ── Brand column ── */}
+            {/* â”€â”€ Brand column â”€â”€ */}
             <div className="lg:col-span-2">
               {/* Logo mark */}
               <div className="mb-5 flex items-center gap-3">
@@ -998,7 +926,7 @@ export default function LandingPage() {
 
               <p className="max-w-xs text-sm leading-relaxed text-cyan-300/80">
                 The platform where brands and creators build real partnerships
-                — with shared analytics, transparent payments, and zero friction.
+                â€” with shared analytics, transparent payments, and zero friction.
               </p>
 
               {/* Live platform badge */}
@@ -1020,7 +948,7 @@ export default function LandingPage() {
                     { Icon: Mail,    label: 'Email'     },
                   ] as const
                 ).map(({ Icon, label }) => (
-                  <motion.a
+                  <m.a
                     key={label}
                     href="#"
                     aria-label={label}
@@ -1029,12 +957,12 @@ export default function LandingPage() {
                     className="flex h-9 w-9 items-center justify-center rounded-full bg-cyan-900/80 text-cyan-400 ring-1 ring-cyan-800 transition-all duration-200 hover:bg-cyan-500 hover:text-white hover:ring-cyan-400"
                   >
                     <Icon className="h-4 w-4" />
-                  </motion.a>
+                  </m.a>
                 ))}
               </div>
             </div>
 
-            {/* ── Navigation columns ── */}
+            {/* â”€â”€ Navigation columns â”€â”€ */}
             <div className="grid grid-cols-3 gap-8 lg:col-span-3">
               {([
                 {
@@ -1075,8 +1003,8 @@ export default function LandingPage() {
             </div>
           </div>
 
-          {/* ── Stats grid ── */}
-          <motion.div
+          {/* â”€â”€ Stats grid â”€â”€ */}
+          <m.div
             initial={{ opacity: 0, y: 24 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -1089,7 +1017,7 @@ export default function LandingPage() {
               { label: 'Campaigns Delivered',  rawValue: 38000,  formatter: (n: number) => `${Math.round(n / 1000 * 10) / 10}K+`, delay: 160 },
               { label: 'Paid Out to Creators', rawValue: 4.2,    formatter: (n: number) => `$${n.toFixed(1)}M+`, delay: 240 },
             ]).map(({ label, rawValue, formatter, delay }) => (
-              <motion.div
+              <m.div
                 key={label}
                 initial={{ opacity: 0 }}
                 whileInView={{ opacity: 1 }}
@@ -1106,26 +1034,26 @@ export default function LandingPage() {
                   />
                 </span>
                 <span className="mt-1.5 text-xs text-cyan-500">{label}</span>
-              </motion.div>
+              </m.div>
             ))}
-          </motion.div>
+          </m.div>
 
-          {/* ── Bottom bar ── */}
+          {/* â”€â”€ Bottom bar â”€â”€ */}
           <div className="mt-10 flex flex-col items-center justify-between gap-5 border-t border-cyan-900 pt-8 sm:flex-row">
             <p className="text-xs text-cyan-800">
-              © {new Date().getFullYear()} Kolabee Ltd. All rights reserved.
+              Â© {new Date().getFullYear()} Kolabee Ltd. All rights reserved.
             </p>
 
 
 
-            <motion.button
+            <m.button
               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
               whileHover={{ y: -2 }}
               whileTap={{ scale: 0.95 }}
               className="flex items-center gap-2 rounded-full bg-cyan-900 px-4 py-2 text-xs font-medium text-cyan-400 ring-1 ring-cyan-800 transition-all hover:bg-cyan-500 hover:text-white hover:ring-cyan-500"
             >
-              Back to top ↑
-            </motion.button>
+              Back to top â†‘
+            </m.button>
           </div>
         </div>
       </footer>

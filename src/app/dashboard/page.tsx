@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
   Sparkles,
   ArrowRight,
@@ -26,6 +26,7 @@ import {
   ChevronRight,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { CountUp } from "@/components/ui/count-up";
 import { StatCardSkeleton } from "@/components/ui/skeleton";
 import { usePersona } from "@/lib/persona-context";
@@ -52,7 +53,7 @@ const cardVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: EASE } },
 };
 
-// ─── Business-side data ────────────────────────────────────────────────────────
+// â”€â”€â”€ Business-side data â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const businessStats = [
   { label: "Total Clicks",     value: 24500,  icon: MousePointerClick, change: "+12.5%" },
   { label: "Total Orders",     value: 1405,   icon: ShoppingCart,      change: "+8.2%"  },
@@ -84,7 +85,7 @@ const activeDeal = {
   ],
 };
 
-// ─── Tier Progress Card ────────────────────────────────────────────────────────
+// â”€â”€â”€ Tier Progress Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const TIER_COLORS: Record<string, { bg: string; text: string; ring: string }> = {
   Bronze:   { bg: "bg-orange-500/10 dark:bg-orange-500/20",  text: "text-orange-700 dark:text-orange-300",  ring: "ring-orange-500/20 dark:ring-orange-500/30" },
   Silver:   { bg: "bg-stone-500/10 dark:bg-stone-500/20",    text: "text-stone-700 dark:text-stone-300",    ring: "ring-stone-500/20 dark:ring-stone-500/30"   },
@@ -103,7 +104,7 @@ function TierProgressCard() {
   const remaining     = e.nextTierThresholdBDT - e.progressTowardNextTier;
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.25, ease: EASE }}
@@ -123,7 +124,7 @@ function TierProgressCard() {
         {/* Current tier badge */}
         <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-wider ring-1 ${currentColors.bg} ${currentColors.text} ${currentColors.ring}`}>
           <Star className="h-3.5 w-3.5" />
-          {e.currentTier} · {(e.currentRateBps / 100).toFixed(2)}%
+          {e.currentTier} Â· {(e.currentRateBps / 100).toFixed(2)}%
         </span>
       </div>
 
@@ -139,21 +140,21 @@ function TierProgressCard() {
             <span className="text-sm font-bold text-cyan-600 dark:text-cyan-400">{pct.toFixed(0)}%</span>
           </div>
           <div className="h-3 w-full rounded-full bg-black/5 dark:bg-white/10 ring-1 ring-black/5 dark:ring-white/10 overflow-hidden">
-            <motion.div
+            <m.div
               className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 relative overflow-hidden"
               initial={{ width: "0%" }}
               animate={{ width: `${pct}%` }}
               transition={{ duration: 1.4, delay: 0.4, ease: EASE }}
             >
               <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent" />
-            </motion.div>
+            </m.div>
           </div>
           <p className="mt-2 text-xs text-stone-500 dark:text-stone-400">
             ৳{remaining.toLocaleString()} more in cleared commissions to reach <strong className={`font-semibold ${nextColors.text}`}>{e.nextTier}</strong>
           </p>
         </div>
 
-        {/* Current → Next comparison */}
+        {/* Current â†’ Next comparison */}
         <div className="grid grid-cols-2 gap-4">
           <div className={`rounded-xl p-4 ring-1 ${currentColors.bg} ${currentColors.ring}`}>
             <p className="text-[10px] font-bold uppercase tracking-widest text-stone-500 dark:text-stone-400 mb-1">Current</p>
@@ -168,11 +169,11 @@ function TierProgressCard() {
           </div>
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 }
 
-// ─── Collab Invites Section ────────────────────────────────────────────────────
+// â”€â”€â”€ Collab Invites Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function CollabInvitesList() {
   const [invites, setInvites] = useState<CollabInvite[]>(mockCollabInvites);
   const [dismissing, setDismissing] = useState<string[]>([]);
@@ -186,7 +187,7 @@ function CollabInvitesList() {
   };
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.35, ease: EASE }}
@@ -203,7 +204,7 @@ function CollabInvitesList() {
 
       <AnimatePresence>
         {invites.length === 0 ? (
-          <motion.div
+          <m.div
             key="empty"
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
@@ -212,9 +213,9 @@ function CollabInvitesList() {
             <Handshake className="h-10 w-10 text-stone-300 dark:text-stone-600" />
             <p className="font-heading font-semibold text-stone-500 dark:text-stone-400">No pending invites</p>
             <p className="text-sm text-stone-400 dark:text-stone-500">New brand invitations will appear here.</p>
-          </motion.div>
+          </m.div>
         ) : (
-          <motion.div
+          <m.div
             key="list"
             variants={containerVariants}
             initial="hidden"
@@ -224,7 +225,7 @@ function CollabInvitesList() {
             {invites.map((invite, i) => {
               const isDismissing = dismissing.includes(invite.id);
               return (
-                <motion.div
+                <m.div
                   key={invite.id}
                   variants={cardVariants}
                   animate={isDismissing ? { opacity: 0, x: 40, height: 0, marginBottom: 0, padding: 0 } : { opacity: 1, x: 0 }}
@@ -232,9 +233,11 @@ function CollabInvitesList() {
                   className="premium-glass rounded-2xl p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center gap-4 overflow-hidden"
                 >
                   {/* Logo + Info */}
-                  <img
+                  <Image
                     src={invite.businessLogo}
                     alt={invite.businessName}
+                    width={44}
+                    height={44}
                     className="h-11 w-11 rounded-full object-cover ring-2 ring-stone-200 dark:ring-stone-700 shrink-0"
                   />
                   <div className="flex-1 min-w-0">
@@ -254,7 +257,7 @@ function CollabInvitesList() {
                     </div>
                     {/* Action buttons */}
                     <div className="flex gap-2">
-                      <motion.button
+                      <m.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => handleAction(invite.id)}
@@ -262,8 +265,8 @@ function CollabInvitesList() {
                       >
                         <Check className="h-3.5 w-3.5" />
                         Accept
-                      </motion.button>
-                      <motion.button
+                      </m.button>
+                      <m.button
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => handleAction(invite.id)}
@@ -271,37 +274,37 @@ function CollabInvitesList() {
                       >
                         <X className="h-3.5 w-3.5" />
                         Decline
-                      </motion.button>
+                      </m.button>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               );
             })}
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
-    </motion.div>
+    </m.div>
   );
 }
 
-// ─── Business Overview ──────────────────────────────────────────────────────
+// â”€â”€â”€ Business Overview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function BusinessOverview({ isLoading }: { isLoading: boolean }) {
   return (
     <>
       {/* Stat Cards */}
       {isLoading ? (
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <m.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[0, 1, 2, 3].map((i) => (
-            <motion.div key={i} variants={cardVariants}><StatCardSkeleton /></motion.div>
+            <m.div key={i} variants={cardVariants}><StatCardSkeleton /></m.div>
           ))}
-        </motion.div>
+        </m.div>
       ) : (
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <m.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {businessStats.map((stat, i) => {
             const Icon = stat.icon;
             const isLive = stat.change === "live";
             return (
-              <motion.div
+              <m.div
                 key={stat.label}
                 variants={cardVariants}
                 whileHover={{ y: -3 }}
@@ -320,22 +323,22 @@ function BusinessOverview({ isLoading }: { isLoading: boolean }) {
                   </span>
                   {isLive ? (
                     <span className="flex items-center gap-1 text-sm font-medium text-red-500 dark:text-red-400">
-                      <motion.span animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }} className="inline-block h-1.5 w-1.5 rounded-full bg-red-500" />
+                      <m.span animate={{ opacity: [1, 0.3, 1] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }} className="inline-block h-1.5 w-1.5 rounded-full bg-red-500" />
                       live
                     </span>
                   ) : (
                     <span className="text-sm font-medium text-green-600">{stat.change}</span>
                   )}
                 </div>
-              </motion.div>
+              </m.div>
             );
           })}
-        </motion.div>
+        </m.div>
       )}
 
       {/* Active Deal Tracker */}
       {!isLoading && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.25, ease: EASE }}
@@ -350,7 +353,7 @@ function BusinessOverview({ isLoading }: { isLoading: boolean }) {
                 </span>
               </h2>
               <p className="text-sm text-stone-500 dark:text-stone-400 mt-1">
-                {activeDeal.campaign} · <span className="font-medium text-stone-700 dark:text-stone-300">{activeDeal.partner}</span>
+                {activeDeal.campaign} Â· <span className="font-medium text-stone-700 dark:text-stone-300">{activeDeal.partner}</span>
               </p>
             </div>
             <div className="flex items-center gap-2 rounded-lg bg-white dark:bg-white/[0.03] px-4 py-2 ring-1 ring-stone-200 dark:ring-white/[0.07] shadow-sm">
@@ -364,7 +367,7 @@ function BusinessOverview({ isLoading }: { isLoading: boolean }) {
           <div className="p-6 sm:p-10">
             <div className="relative mx-auto max-w-4xl">
               <div className="absolute left-[10%] top-6 w-[80%] h-1 bg-stone-100 dark:bg-white/10 rounded-full" />
-              <motion.div
+              <m.div
                 initial={{ width: "0%" }}
                 animate={{ width: `${((activeDeal.currentStep - 1) / (activeDeal.steps.length - 1)) * 80}%` }}
                 transition={{ duration: 1.2, delay: 0.5, ease: EASE }}
@@ -380,7 +383,7 @@ function BusinessOverview({ isLoading }: { isLoading: boolean }) {
                     <div key={step.id} className="flex flex-col items-center w-1/4 relative group">
                       <div className="relative mb-4">
                         {isCurrent && (
-                          <motion.div
+                          <m.div
                             animate={{ scale: [1, 1.3, 1], opacity: [0.5, 0, 0.5] }}
                             transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
                             className="absolute inset-0 rounded-full bg-cyan-400"
@@ -405,7 +408,7 @@ function BusinessOverview({ isLoading }: { isLoading: boolean }) {
                 })}
               </div>
             </div>
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 1.2, ease: EASE }}
@@ -415,14 +418,14 @@ function BusinessOverview({ isLoading }: { isLoading: boolean }) {
                 <UploadCloud className="h-4 w-4" />
                 Review Submitted Content
               </button>
-            </motion.div>
+            </m.div>
           </div>
-        </motion.div>
+        </m.div>
       )}
 
       {/* Quick nav */}
       {!isLoading && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.35, ease: EASE }}
@@ -432,7 +435,7 @@ function BusinessOverview({ isLoading }: { isLoading: boolean }) {
             {businessQuickLinks.map((link) => {
               const Icon = link.icon;
               return (
-                <motion.div key={link.href} whileHover={{ y: -3, boxShadow: "0 12px 24px -4px rgb(8 145 178 / 0.12)" }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.2, ease: EASE }}>
+                <m.div key={link.href} whileHover={{ y: -3, boxShadow: "0 12px 24px -4px rgb(8 145 178 / 0.12)" }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.2, ease: EASE }}>
                   <Link href={link.href} className="group flex items-center gap-4 rounded-2xl border border-stone-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.02] p-5 shadow-sm transition-colors hover:border-cyan-200 dark:hover:border-cyan-800">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600 ring-1 ring-cyan-100 transition-colors group-hover:bg-cyan-600 group-hover:text-white group-hover:ring-cyan-600">
                       <Icon className="h-6 w-6" />
@@ -443,17 +446,17 @@ function BusinessOverview({ isLoading }: { isLoading: boolean }) {
                     </div>
                     <ArrowRight className="h-5 w-5 text-stone-300 transition-transform group-hover:translate-x-1 group-hover:text-cyan-500" />
                   </Link>
-                </motion.div>
+                </m.div>
               );
             })}
           </div>
-        </motion.div>
+        </m.div>
       )}
     </>
   );
 }
 
-// ─── Creator Overview ──────────────────────────────────────────────────────
+// â”€â”€â”€ Creator Overview â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 function CreatorOverview({ isLoading }: { isLoading: boolean }) {
   const totalClicks  = mockCreatorLinks.reduce((s, l) => s + l.clicks, 0);
   const activeLinks  = mockCreatorLinks.filter((l) => l.status === "Active").length;
@@ -469,18 +472,18 @@ function CreatorOverview({ isLoading }: { isLoading: boolean }) {
     <>
       {/* Stat Cards */}
       {isLoading ? (
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <m.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {[0, 1, 2, 3].map((i) => (
-            <motion.div key={i} variants={cardVariants}><StatCardSkeleton /></motion.div>
+            <m.div key={i} variants={cardVariants}><StatCardSkeleton /></m.div>
           ))}
-        </motion.div>
+        </m.div>
       ) : (
-        <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <m.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {creatorStats.map((stat, i) => {
             const Icon = stat.icon;
             const isWithdraw = stat.change === "withdraw";
             return (
-              <motion.div
+              <m.div
                 key={stat.label}
                 variants={cardVariants}
                 whileHover={{ y: -3 }}
@@ -506,10 +509,10 @@ function CreatorOverview({ isLoading }: { isLoading: boolean }) {
                     <span className="text-sm font-medium text-green-600">{stat.change}</span>
                   )}
                 </div>
-              </motion.div>
+              </m.div>
             );
           })}
-        </motion.div>
+        </m.div>
       )}
 
       {/* Tier Progress Card */}
@@ -520,7 +523,7 @@ function CreatorOverview({ isLoading }: { isLoading: boolean }) {
 
       {/* Quick nav */}
       {!isLoading && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 0.45, ease: EASE }}
@@ -530,7 +533,7 @@ function CreatorOverview({ isLoading }: { isLoading: boolean }) {
             {quickLinks.map((link) => {
               const Icon = link.icon;
               return (
-                <motion.div key={link.href} whileHover={{ y: -3, boxShadow: "0 12px 24px -4px rgb(8 145 178 / 0.12)" }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.2, ease: EASE }}>
+                <m.div key={link.href} whileHover={{ y: -3, boxShadow: "0 12px 24px -4px rgb(8 145 178 / 0.12)" }} whileTap={{ scale: 0.98 }} transition={{ duration: 0.2, ease: EASE }}>
                   <Link href={link.href} className="group flex items-center gap-4 rounded-2xl border border-stone-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.02] p-5 shadow-sm transition-colors hover:border-cyan-200 dark:hover:border-cyan-800">
                     <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-cyan-50 text-cyan-600 ring-1 ring-cyan-100 transition-colors group-hover:bg-cyan-600 group-hover:text-white group-hover:ring-cyan-600">
                       <Icon className="h-6 w-6" />
@@ -541,17 +544,17 @@ function CreatorOverview({ isLoading }: { isLoading: boolean }) {
                     </div>
                     <ArrowRight className="h-5 w-5 text-stone-300 transition-transform group-hover:translate-x-1 group-hover:text-cyan-500" />
                   </Link>
-                </motion.div>
+                </m.div>
               );
             })}
           </div>
-        </motion.div>
+        </m.div>
       )}
     </>
   );
 }
 
-// ─── Main Page ─────────────────────────────────────────────────────────────
+// â”€â”€â”€ Main Page â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 export default function DashboardOverview() {
   const [isLoading, setIsLoading] = useState(true);
   const persona = usePersona();
@@ -565,7 +568,7 @@ export default function DashboardOverview() {
     <div className="flex flex-col gap-8 pb-10">
       {/* Welcome Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease: EASE }}
@@ -576,20 +579,21 @@ export default function DashboardOverview() {
               ? "Your personal earnings and link performance snapshot."
               : "Your performance snapshot for today."}
           </p>
-        </motion.div>
+        </m.div>
       </div>
 
       <AnimatePresence mode="wait">
         {persona === "creator" ? (
-          <motion.div key="creator" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} className="flex flex-col gap-8">
+          <m.div key="creator" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} className="flex flex-col gap-8">
             <CreatorOverview isLoading={isLoading} />
-          </motion.div>
+          </m.div>
         ) : (
-          <motion.div key="business" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} className="flex flex-col gap-8">
+          <m.div key="business" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 0.25 }} className="flex flex-col gap-8">
             <BusinessOverview isLoading={isLoading} />
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </div>
   );
 }
+

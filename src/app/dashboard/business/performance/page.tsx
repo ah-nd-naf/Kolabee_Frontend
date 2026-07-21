@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
-import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useMemo } from "react";
+import { m, AnimatePresence } from "framer-motion";
 import {
   ArrowUpRight,
   ArrowDownRight,
@@ -15,6 +15,7 @@ import {
   Ban
 } from "lucide-react";
 import { mockPartners, Partner } from "@/lib/mock-data";
+import Image from "next/image";
 
 // The columns we want to be sortable
 type SortKey = "orders" | "commissionPaid" | "conversionRate" | "commissionRateBps" | "trendValue";
@@ -32,12 +33,14 @@ export default function PerformancePage() {
     }
   };
 
-  const sortedPartners = [...mockPartners].sort((a, b) => {
-    const aVal = a[sortKey];
-    const bVal = b[sortKey];
-    if (sortDirection === "asc") return aVal > bVal ? 1 : -1;
-    return aVal < bVal ? 1 : -1;
-  });
+  const sortedPartners = useMemo(() => {
+    return [...mockPartners].sort((a, b) => {
+      const aVal = a[sortKey];
+      const bVal = b[sortKey];
+      if (sortDirection === "asc") return aVal > bVal ? 1 : -1;
+      return aVal < bVal ? 1 : -1;
+    });
+  }, [sortKey, sortDirection]);
 
   const getTierColor = (tier: string) => {
     switch (tier) {
@@ -112,7 +115,7 @@ export default function PerformancePage() {
         <div className="flex flex-col">
           <AnimatePresence>
             {sortedPartners.map((partner) => (
-              <motion.div
+              <m.div
                 key={partner.id}
                 layout // This single prop enables the smooth re-sorting animation!
                 initial={{ opacity: 0 }}
@@ -124,9 +127,11 @@ export default function PerformancePage() {
                 
                 {/* 1. Avatar & Name */}
                 <div className="col-span-3 flex items-center gap-3">
-                  <img 
+                  <Image 
                     src={partner.avatar} 
                     alt={partner.name} 
+                    width={40}
+                    height={40}
                     className="h-10 w-10 rounded-full object-cover ring-1 ring-stone-200 dark:ring-stone-800"
                   />
                   <div className="flex flex-col">
@@ -160,25 +165,25 @@ export default function PerformancePage() {
                 <div className="col-span-2 flex items-center gap-2">
                   {partner.trend === "up" && (
                     <>
-                      <motion.div 
+                      <m.div 
                         animate={{ opacity: [0.5, 1, 0.5] }} 
                         transition={{ repeat: Infinity, duration: 2 }}
                         className="flex h-6 w-6 items-center justify-center rounded-full bg-green-500/10 text-green-600 dark:text-green-400"
                       >
                         <ArrowUpRight className="h-4 w-4" />
-                      </motion.div>
+                      </m.div>
                       <span className="text-sm font-medium text-green-600 dark:text-green-400">+{partner.trendValue}%</span>
                     </>
                   )}
                   {partner.trend === "down" && (
                     <>
-                      <motion.div 
+                      <m.div 
                         animate={{ opacity: [0.5, 1, 0.5] }} 
                         transition={{ repeat: Infinity, duration: 2 }}
                         className="flex h-6 w-6 items-center justify-center rounded-full bg-red-500/10 text-red-600 dark:text-red-400"
                       >
                         <ArrowDownRight className="h-4 w-4" />
-                      </motion.div>
+                      </m.div>
                       <span className="text-sm font-medium text-red-600 dark:text-red-400">-{partner.trendValue}%</span>
                     </>
                   )}
@@ -215,7 +220,7 @@ export default function PerformancePage() {
                   </div>
                 </div>
 
-              </motion.div>
+              </m.div>
             ))}
           </AnimatePresence>
         </div>
@@ -223,3 +228,4 @@ export default function PerformancePage() {
     </div>
   );
 }
+

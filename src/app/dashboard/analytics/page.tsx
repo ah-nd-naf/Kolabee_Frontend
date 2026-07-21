@@ -1,8 +1,8 @@
-// src/app/dashboard/analytics/page.tsx
+﻿// src/app/dashboard/analytics/page.tsx
 "use client";
 
-import { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useRef, useMemo } from "react";
+import { m, AnimatePresence } from "framer-motion";
 import {
   Users,
   ShoppingCart,
@@ -23,7 +23,7 @@ import { CountUp } from "@/components/ui/count-up";
 import { StatCardSkeleton } from "@/components/ui/skeleton";
 import { usePersona } from "@/lib/persona-context";
 
-// Canonical easing curve — [0.16, 1, 0.3, 1]
+// Canonical easing curve â€” [0.16, 1, 0.3, 1]
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
 const containerVariants = {
@@ -39,9 +39,9 @@ const cardVariants = {
   visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: EASE } },
 };
 
-/* ──────────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    Premium Custom Funnel Chart (Ultra Modern)
-─────────────────────────────────────────────────── */
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
 interface FunnelStage {
   stage: string;
@@ -100,7 +100,7 @@ function PremiumFunnelChart({ stages }: { stages: FunnelStage[] }) {
             <div key={stage.stage} className="relative mb-6 last:mb-0">
               {/* Drop-off Badge */}
               {dropOff && (
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, scale: 0.8 }}
                   animate={isVisible ? { opacity: 1, scale: 1 } : {}}
                   transition={{ duration: 0.4, delay: i * 0.1 + 0.1, ease: EASE }}
@@ -112,7 +112,7 @@ function PremiumFunnelChart({ stages }: { stages: FunnelStage[] }) {
                       -{dropOff}%
                     </span>
                   </div>
-                </motion.div>
+                </m.div>
               )}
 
               <div 
@@ -121,21 +121,21 @@ function PremiumFunnelChart({ stages }: { stages: FunnelStage[] }) {
                 onMouseLeave={() => setHoveredIndex(null)}
               >
                 {/* Timeline Icon Node */}
-                <motion.div
+                <m.div
                   initial={{ opacity: 0, scale: 0.5 }}
                   animate={isVisible ? { opacity: 1, scale: 1 } : {}}
                   transition={{ duration: 0.5, delay: i * 0.1, ease: EASE }}
                   className="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-white/40 dark:bg-black/40 ring-4 ring-white/30 dark:ring-white/5 shadow-sm border border-stone-200/50 dark:border-white/10 cursor-default"
                 >
                   {isHovered && (
-                    <motion.div
+                    <m.div
                       layoutId="glow"
                       className="absolute inset-0 rounded-full"
                       style={{ background: GRADIENTS[i].from, filter: "blur(8px)", opacity: 0.6 }}
                       transition={{ duration: 0.2 }}
                     />
                   )}
-                  <motion.div 
+                  <m.div 
                     className="absolute inset-0 rounded-full z-0" 
                     initial={{ opacity: 0 }}
                     animate={{ opacity: isHovered ? 1 : 0 }}
@@ -143,7 +143,7 @@ function PremiumFunnelChart({ stages }: { stages: FunnelStage[] }) {
                     transition={{ duration: 0.2 }}
                   />
                   <StageIcon className="h-4 w-4 relative z-10 transition-colors duration-200" style={{ color: isHovered ? '#fff' : GRADIENTS[i].from }} />
-                </motion.div>
+                </m.div>
 
                 {/* Bar Area */}
                 <div className="flex flex-1 flex-col justify-center gap-2 py-2 cursor-default">
@@ -163,7 +163,7 @@ function PremiumFunnelChart({ stages }: { stages: FunnelStage[] }) {
 
                   {/* The Bar itself */}
                   <div className="relative h-3 sm:h-4 w-full rounded-full bg-black/5 dark:bg-white/5 overflow-hidden shadow-inner ring-1 ring-black/5 dark:ring-white/10">
-                    <motion.div
+                    <m.div
                       className="absolute inset-y-0 left-0 rounded-full"
                       initial={{ width: "0%" }}
                       animate={isVisible ? { width: `${pct}%` } : { width: "0%" }}
@@ -177,9 +177,9 @@ function PremiumFunnelChart({ stages }: { stages: FunnelStage[] }) {
                       <div className="absolute inset-0 rounded-full bg-gradient-to-b from-white/30 to-transparent pointer-events-none" />
                       
                       {/* Animated shimmer sweep */}
-                      <motion.div
+                      <m.div
                         className="absolute inset-0"
-                        animate={isVisible ? { x: ["−100%", "200%"] } : {}}
+                        animate={isVisible ? { x: ["âˆ’100%", "200%"] } : {}}
                         transition={{
                           duration: 2.5,
                           delay: i * 0.1 + 0.6,
@@ -192,7 +192,7 @@ function PremiumFunnelChart({ stages }: { stages: FunnelStage[] }) {
                           width: "50%",
                         }}
                       />
-                    </motion.div>
+                    </m.div>
                   </div>
                 </div>
               </div>
@@ -202,7 +202,7 @@ function PremiumFunnelChart({ stages }: { stages: FunnelStage[] }) {
       </div>
 
       {/* Modern Summary Row */}
-      <motion.div
+      <m.div
         initial={{ opacity: 0, y: 15 }}
         animate={isVisible ? { opacity: 1, y: 0 } : {}}
         transition={{ duration: 0.6, delay: stages.length * 0.1 + 0.3, ease: EASE }}
@@ -235,16 +235,16 @@ function PremiumFunnelChart({ stages }: { stages: FunnelStage[] }) {
             </div>
           ))}
         </div>
-      </motion.div>
+      </m.div>
     </div>
   );
 }
 
-/* ──────────────────────────────────────────────────
+/* â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
    Main Page
-─────────────────────────────────────────────────── */
+â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 
-// ─── Creator Rate Detail Card ─────────────────────────────────────────────────
+// â”€â”€â”€ Creator Rate Detail Card â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 const TIER_COLORS: Record<string, { bg: string; text: string; ring: string }> = {
   Bronze:   { bg: "bg-orange-500/10 dark:bg-orange-500/20",  text: "text-orange-700 dark:text-orange-300",  ring: "ring-orange-500/20 dark:ring-orange-500/30" },
   Silver:   { bg: "bg-stone-500/10 dark:bg-stone-500/20",    text: "text-stone-700 dark:text-stone-300",    ring: "ring-stone-500/20 dark:ring-stone-500/30"   },
@@ -263,7 +263,7 @@ function CreatorRateDetailCard() {
   const ordersNeeded  = Math.ceil(remaining / ((e.currentRateBps / 100 / 100) * 1000)); // rough estimate
 
   return (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.6, delay: 0.3, ease: EASE }}
@@ -281,7 +281,7 @@ function CreatorRateDetailCard() {
         </div>
         <span className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-bold uppercase tracking-wider ring-1 ${currentColors.bg} ${currentColors.text} ${currentColors.ring}`}>
           <Star className="h-3.5 w-3.5" />
-          {e.currentTier} · {(e.currentRateBps / 100).toFixed(2)}%
+          {e.currentTier} Â· {(e.currentRateBps / 100).toFixed(2)}%
         </span>
       </div>
 
@@ -295,20 +295,20 @@ function CreatorRateDetailCard() {
           <span className="text-sm font-bold text-cyan-600 dark:text-cyan-400">{pct.toFixed(1)}%</span>
         </div>
         <div className="h-4 w-full rounded-full bg-black/5 dark:bg-white/5 ring-1 ring-black/5 dark:ring-white/10 overflow-hidden">
-          <motion.div
+          <m.div
             className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 relative overflow-hidden"
             initial={{ width: "0%" }}
             animate={{ width: `${pct}%` }}
             transition={{ duration: 1.4, delay: 0.5, ease: EASE }}
           >
             <div className="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent" />
-            <motion.div
+            <m.div
               className="absolute inset-0"
               animate={{ x: ["-100%", "200%"] }}
               transition={{ duration: 2.5, delay: 1.2, repeat: Infinity, repeatDelay: 2, ease: "easeInOut" }}
               style={{ background: "linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)", width: "50%" }}
             />
-          </motion.div>
+          </m.div>
         </div>
         <p className="mt-2 text-xs text-stone-500 dark:text-stone-400">
           ৳{remaining.toLocaleString()} more to unlock <strong className={`font-semibold ${nextColors.text}`}>{e.nextTier}</strong> at <strong className={`font-semibold ${nextColors.text}`}>{(nextRate / 100).toFixed(2)}%</strong>
@@ -330,7 +330,7 @@ function CreatorRateDetailCard() {
           </div>
         ))}
       </div>
-    </motion.div>
+    </m.div>
   );
 }
 
@@ -357,28 +357,28 @@ export default function AnalyticsPage() {
   const conversionRate = (mockFunnelData.orderConfirmed / mockFunnelData.totalVisits) * 100;
 
   // Build typed funnel stages for Business
-  const funnelStages: FunnelStage[] = mockFunnelData.chartData.map((d, i) => ({
+  const funnelStages: FunnelStage[] = useMemo(() => mockFunnelData.chartData.map((d, i) => ({
     stage: d.stage,
     count: d.count,
     icon: stageIcons[i % stageIcons.length],
-  }));
+  })), []);
 
   // Creator-specific derived stats
-  const totalClicks   = mockCreatorLinks.reduce((s, l) => s + l.clicks, 0);
+  const totalClicks   = useMemo(() => mockCreatorLinks.reduce((s, l) => s + l.clicks, 0), []);
   const scaleFactor   = mockFunnelData.totalVisits > 0 ? totalClicks / mockFunnelData.totalVisits : 0;
   
-  const creatorFunnelStages: FunnelStage[] = mockFunnelData.chartData.map((d, i) => ({
+  const creatorFunnelStages: FunnelStage[] = useMemo(() => mockFunnelData.chartData.map((d, i) => ({
     stage: d.stage,
     count: Math.round(d.count * scaleFactor),
     icon: stageIcons[i % stageIcons.length],
-  }));
+  })), [scaleFactor]);
 
   const creatorTotalOrders = creatorFunnelStages[creatorFunnelStages.length - 1]?.count || 0;
   const myConversion  = totalClicks > 0 ? (creatorTotalOrders / totalClicks) * 100 : 0;
 
-  // ── Skeleton ──────────────────────────────────────────────────────────────
+  // â”€â”€ Skeleton â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const skeletonChart = (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5, delay: 0.2, ease: EASE }}
@@ -399,18 +399,18 @@ export default function AnalyticsPage() {
           </div>
         ))}
       </div>
-    </motion.div>
+    </m.div>
   );
 
-  // ── Filter button (shared) ─────────────────────────────────────────────────
+  // â”€â”€ Filter button (shared) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
   const filterBtn = (
-    <motion.div
+    <m.div
       initial={{ opacity: 0, x: 20 }}
       animate={{ opacity: 1, x: 0 }}
       transition={{ duration: 0.5, ease: EASE }}
       className="flex items-center gap-3"
     >
-      <motion.button
+      <m.button
         whileHover={{ scale: 1.03 }}
         whileTap={{ scale: 0.96 }}
         transition={{ duration: 0.2, ease: EASE }}
@@ -418,36 +418,36 @@ export default function AnalyticsPage() {
       >
         <Filter className="h-4 w-4" />
         <span>Last 30 Days</span>
-      </motion.button>
-    </motion.div>
+      </m.button>
+    </m.div>
   );
 
-  // ════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   //  CREATOR ANALYTICS VIEW
-  // ════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   if (persona === "creator") {
     return (
       <div className="flex flex-col gap-8 pb-10">
         {/* Page Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, ease: EASE }}>
+          <m.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, ease: EASE }}>
             <h1 className="font-heading text-3xl font-bold text-cyan-950 dark:text-white">My Analytics</h1>
             <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
               Your personal link performance and commission rate progress.
             </p>
-          </motion.div>
+          </m.div>
           {filterBtn}
         </div>
 
         {/* Creator KPI Cards */}
         {isLoading ? (
-          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-            {[0, 1, 2].map((i) => (<motion.div key={i} variants={cardVariants}><StatCardSkeleton /></motion.div>))}
-          </motion.div>
+          <m.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+            {[0, 1, 2].map((i) => (<m.div key={i} variants={cardVariants}><StatCardSkeleton /></m.div>))}
+          </m.div>
         ) : (
-          <motion.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <m.div variants={containerVariants} initial="hidden" animate="visible" className="grid grid-cols-1 gap-4 sm:grid-cols-3">
             {/* My Total Clicks */}
-            <motion.div variants={cardVariants} whileHover={{ y: -3 }} transition={{ duration: 0.22, ease: EASE }} className="premium-glass rounded-2xl p-6">
+            <m.div variants={cardVariants} whileHover={{ y: -3 }} transition={{ duration: 0.22, ease: EASE }} className="premium-glass rounded-2xl p-6">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-stone-500 dark:text-stone-400">My Total Clicks</span>
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-400"><MousePointerClick className="h-5 w-5" /></div>
@@ -458,10 +458,10 @@ export default function AnalyticsPage() {
                 </span>
                 <span className="flex items-center text-sm font-medium text-green-600"><ArrowUpRight className="h-4 w-4" /> 9.4%</span>
               </div>
-            </motion.div>
+            </m.div>
 
             {/* My Conversion Rate */}
-            <motion.div variants={cardVariants} whileHover={{ y: -3 }} transition={{ duration: 0.22, ease: EASE }} className="premium-glass rounded-2xl p-6">
+            <m.div variants={cardVariants} whileHover={{ y: -3 }} transition={{ duration: 0.22, ease: EASE }} className="premium-glass rounded-2xl p-6">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-stone-500 dark:text-stone-400">My Conversion Rate</span>
                 <div className="flex h-10 w-10 items-center justify-center rounded-full bg-cyan-500/10 text-cyan-700 dark:text-cyan-400"><TrendingUp className="h-5 w-5" /></div>
@@ -472,10 +472,10 @@ export default function AnalyticsPage() {
                 </span>
                 <span className="flex items-center text-sm font-medium text-green-600"><ArrowUpRight className="h-4 w-4" /> 1.2%</span>
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Commissions This Month */}
-            <motion.div variants={cardVariants} whileHover={{ y: -3 }} transition={{ duration: 0.22, ease: EASE }} className="relative overflow-hidden premium-glass rounded-2xl p-6">
+            <m.div variants={cardVariants} whileHover={{ y: -3 }} transition={{ duration: 0.22, ease: EASE }} className="relative overflow-hidden premium-glass rounded-2xl p-6">
               <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-cyan-100/50 dark:bg-cyan-400/10 blur-xl" />
               <div className="relative z-10 flex items-center justify-between">
                 <span className="text-sm font-medium text-stone-500 dark:text-stone-400">Commissions This Month</span>
@@ -487,13 +487,13 @@ export default function AnalyticsPage() {
                 </span>
                 <span className="flex items-center text-sm font-medium text-green-600"><ArrowUpRight className="h-4 w-4" /> 14.2%</span>
               </div>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
         )}
 
         {/* Creator Funnel Chart */}
         {!isLoading && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.25, ease: EASE }} className="rounded-3xl premium-glass p-6 sm:p-10 shadow-lg">
+          <m.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.25, ease: EASE }} className="rounded-3xl premium-glass p-6 sm:p-10 shadow-lg">
             <div className="mb-6 flex flex-col sm:flex-row sm:items-start justify-between gap-4">
               <div>
                 <h3 className="font-heading text-2xl font-bold text-cyan-950 dark:text-white flex items-center gap-2">
@@ -501,16 +501,16 @@ export default function AnalyticsPage() {
                   Your Funnel
                 </h3>
                 <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
-                  Visitor journey through <strong className="font-semibold text-stone-700 dark:text-stone-300">your links</strong> — from first click to confirmed order.
+                  Visitor journey through <strong className="font-semibold text-stone-700 dark:text-stone-300">your links</strong> â€” from first click to confirmed order.
                 </p>
               </div>
               <div className="flex items-center gap-2 rounded-full bg-cyan-50 dark:bg-cyan-950/50 px-4 py-2 ring-1 ring-cyan-100 dark:ring-cyan-900/50">
-                <motion.span animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="h-2 w-2 rounded-full bg-cyan-500" />
+                <m.span animate={{ opacity: [1, 0.4, 1] }} transition={{ repeat: Infinity, duration: 2 }} className="h-2 w-2 rounded-full bg-cyan-500" />
                 <span className="text-xs font-bold uppercase tracking-wider text-cyan-700 dark:text-cyan-400">Last 30 Days</span>
               </div>
             </div>
             <PremiumFunnelChart stages={creatorFunnelStages} />
-          </motion.div>
+          </m.div>
         )}
         {isLoading && skeletonChart}
 
@@ -520,15 +520,15 @@ export default function AnalyticsPage() {
     );
   }
 
-  // ════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   //  BUSINESS ANALYTICS VIEW
-  // ════════════════════════════════════════════════════════════
+  // â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
   return (
     <div className="flex flex-col gap-8 pb-10">
 
       {/* Page Header */}
       <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <motion.div
+        <m.div
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.5, ease: EASE }}
@@ -537,33 +537,33 @@ export default function AnalyticsPage() {
           <p className="mt-1 text-sm text-stone-500 dark:text-stone-400">
             Real-time funnel conversion and attribution data.
           </p>
-        </motion.div>
+        </m.div>
         {filterBtn}
       </div>
 
       {/* KPI Cards */}
       {isLoading ? (
-        <motion.div
+        <m.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
           className="grid grid-cols-1 gap-4 sm:grid-cols-3"
         >
           {[0, 1, 2].map((i) => (
-            <motion.div key={i} variants={cardVariants}>
+            <m.div key={i} variants={cardVariants}>
               <StatCardSkeleton />
-            </motion.div>
+            </m.div>
           ))}
-        </motion.div>
+        </m.div>
       ) : (
-        <motion.div
+        <m.div
           variants={containerVariants}
           initial="hidden"
           animate="visible"
           className="grid grid-cols-1 gap-4 sm:grid-cols-3"
         >
           {/* Total Visits */}
-          <motion.div
+          <m.div
             variants={cardVariants}
             whileHover={{ y: -3 }}
             transition={{ duration: 0.22, ease: EASE }}
@@ -588,10 +588,10 @@ export default function AnalyticsPage() {
                 <ArrowUpRight className="h-4 w-4" /> 12.5%
               </span>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Conversion Rate */}
-          <motion.div
+          <m.div
             variants={cardVariants}
             whileHover={{ y: -3 }}
             transition={{ duration: 0.22, ease: EASE }}
@@ -611,10 +611,10 @@ export default function AnalyticsPage() {
                 <ArrowUpRight className="h-4 w-4" /> 2.1%
               </span>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Live Checkout */}
-          <motion.div
+          <m.div
             variants={cardVariants}
             whileHover={{ y: -3 }}
             transition={{ duration: 0.22, ease: EASE }}
@@ -623,7 +623,7 @@ export default function AnalyticsPage() {
             <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-cyan-100/50 dark:bg-cyan-400/10 blur-xl" />
             <div className="relative z-10 flex items-center justify-between">
               <span className="flex items-center gap-2 text-sm font-medium text-cyan-800 dark:text-cyan-300">
-                <motion.div
+                <m.div
                   animate={{ opacity: [1, 0.3, 1] }}
                   transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
                   className="h-2 w-2 rounded-full bg-red-500"
@@ -636,7 +636,7 @@ export default function AnalyticsPage() {
             </div>
             <div className="relative z-10 mt-4 flex items-baseline gap-2">
               <AnimatePresence mode="wait">
-                <motion.span
+                <m.span
                   key={liveCheckout}
                   initial={{ opacity: 0, y: -10 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -645,18 +645,18 @@ export default function AnalyticsPage() {
                   className="text-3xl font-bold text-cyan-950 dark:text-white"
                 >
                   {liveCheckout}
-                </motion.span>
+                </m.span>
               </AnimatePresence>
               <span className="text-sm font-medium text-cyan-700 dark:text-cyan-400">users right now</span>
             </div>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       )}
 
 
       {/* Premium Funnel Chart */}
       {!isLoading && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 0.25, ease: EASE }}
@@ -674,7 +674,7 @@ export default function AnalyticsPage() {
               </p>
             </div>
             <div className="flex items-center gap-2 rounded-full bg-cyan-50 dark:bg-cyan-950/50 px-4 py-2 ring-1 ring-cyan-100 dark:ring-cyan-900/50">
-              <motion.span 
+              <m.span 
                 animate={{ opacity: [1, 0.4, 1] }} 
                 transition={{ repeat: Infinity, duration: 2 }} 
                 className="h-2 w-2 rounded-full bg-cyan-500" 
@@ -684,7 +684,7 @@ export default function AnalyticsPage() {
           </div>
 
           <PremiumFunnelChart stages={funnelStages} />
-        </motion.div>
+        </m.div>
       )}
 
       {/* Skeleton chart while loading */}
@@ -693,3 +693,4 @@ export default function AnalyticsPage() {
     </div>
   );
 }
+

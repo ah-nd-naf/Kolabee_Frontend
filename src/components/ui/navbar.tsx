@@ -1,9 +1,9 @@
-// src/components/ui/navbar.tsx
+﻿// src/components/ui/navbar.tsx
 "use client";
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
+import { m, AnimatePresence } from "framer-motion";
 import {
   Hexagon,
   Zap,
@@ -22,7 +22,7 @@ import { ThemeToggleSimple } from "@/components/ui/theme-toggle";
 
 const EASE = [0.16, 1, 0.3, 1] as [number, number, number, number];
 
-/* ─── Nav data ─── */
+/* â”€â”€â”€ Nav data â”€â”€â”€ */
 const productLinks = [
   { label: "Creator Dashboard",  href: "/dashboard/creator/links", icon: Link2,      desc: "Manage your referral links"     },
   { label: "Link Analytics",     href: "/dashboard/analytics",    icon: BarChart3,   desc: "Real-time funnel insights"      },
@@ -41,12 +41,12 @@ const navLinks = [
   { label: "About",     href: "/#"              },
 ];
 
-/* ─── Dropdown menu ─── */
+/* â”€â”€â”€ Dropdown menu â”€â”€â”€ */
 function DropdownMenu({ items, isOpen }: { items: typeof productLinks; isOpen: boolean }) {
   return (
     <AnimatePresence>
       {isOpen && (
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 8, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 8, scale: 0.97 }}
@@ -78,13 +78,13 @@ function DropdownMenu({ items, isOpen }: { items: typeof productLinks; isOpen: b
               );
             })}
           </div>
-        </motion.div>
+        </m.div>
       )}
     </AnimatePresence>
   );
 }
 
-/* ─── Animated underline nav link ─── */
+/* â”€â”€â”€ Animated underline nav link â”€â”€â”€ */
 function NavLinkWithUnderline({
   href,
   children,
@@ -95,7 +95,7 @@ function NavLinkWithUnderline({
   className?: string;
 }) {
   return (
-    <motion.div
+    <m.div
       initial="rest"
       whileHover="hover"
       animate="rest"
@@ -104,23 +104,23 @@ function NavLinkWithUnderline({
       <Link href={href} className={className}>
         {children}
       </Link>
-      <motion.span
+      <m.span
         className="absolute -bottom-0.5 left-2 right-2 h-px bg-cyan-400/80 origin-left"
         variants={{ rest: { scaleX: 0 }, hover: { scaleX: 1 } }}
         transition={{ duration: 0.25, ease: EASE }}
       />
-    </motion.div>
+    </m.div>
   );
 }
 
-/* ─── Mobile menu ─── */
+/* â”€â”€â”€ Mobile menu â”€â”€â”€ */
 function MobileMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void }) {
   return (
     <AnimatePresence>
       {isOpen && (
         <>
           {/* Backdrop */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
@@ -130,7 +130,7 @@ function MobileMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
           />
 
           {/* Drawer */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -20 }}
@@ -183,14 +183,14 @@ function MobileMenu({ isOpen, onClose }: { isOpen: boolean; onClose: () => void 
                 </Link>
               </div>
             </div>
-          </motion.div>
+          </m.div>
         </>
       )}
     </AnimatePresence>
   );
 }
 
-/* ─── Main Navbar ─── */
+/* â”€â”€â”€ Main Navbar â”€â”€â”€ */
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
@@ -207,14 +207,14 @@ export function Navbar() {
 
   return (
     <>
-      <motion.header
+      <m.header
         initial={{ y: -80, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
         transition={{ duration: 0.7, ease: EASE, delay: 0.05 }}
         className="fixed top-0 inset-x-0 z-50"
         onMouseLeave={() => setOpenDropdown(null)}
       >
-        {/* Outer container — transitions from transparent to blurred glass */}
+        {/* Outer container â€” transitions from transparent to blurred glass */}
         <div
           className={`mx-auto transition-all duration-500 ${
             scrolled
@@ -229,9 +229,9 @@ export function Navbar() {
                 : "h-20 bg-transparent"
             }`}
           >
-            {/* ── Logo ── */}
+            {/* â”€â”€ Logo â”€â”€ */}
             <Link href="/" className="group flex shrink-0 items-center gap-2.5">
-              <motion.div
+              <m.div
                 whileHover={{ rotate: 15, scale: 1.1 }}
                 transition={{ duration: 0.25, ease: EASE }}
                 className="relative flex h-9 w-9 items-center justify-center"
@@ -242,7 +242,7 @@ export function Navbar() {
                   strokeWidth={0}
                 />
                 <Zap className="absolute h-4 w-4 fill-white text-white" strokeWidth={0} />
-              </motion.div>
+              </m.div>
               <span
                 className={`font-heading text-xl font-bold tracking-tight transition-colors duration-300 ${
                   scrolled
@@ -254,7 +254,7 @@ export function Navbar() {
               </span>
             </Link>
 
-            {/* ── Desktop Nav — absolutely centered in the bar ── */}
+            {/* â”€â”€ Desktop Nav â€” absolutely centered in the bar â”€â”€ */}
             <nav className="hidden lg:flex absolute left-1/2 -translate-x-1/2 items-center gap-1">
               {navLinks.map((link) => (
                 <div key={link.label} className="relative">
@@ -270,7 +270,7 @@ export function Navbar() {
                       {link.label}
                     </NavLinkWithUnderline>
                   ) : (
-                    <motion.div
+                    <m.div
                       initial="rest"
                       whileHover="hover"
                       animate="rest"
@@ -285,20 +285,20 @@ export function Navbar() {
                         } ${openDropdown === link.label ? (scrolled ? "text-stone-900 dark:text-white" : "text-white") : ""}`}
                       >
                         {link.label}
-                        <motion.span
+                        <m.span
                           animate={{ rotate: openDropdown === link.label ? 180 : 0 }}
                           transition={{ duration: 0.2, ease: EASE }}
                         >
                           <ChevronDown className="h-3.5 w-3.5" />
-                        </motion.span>
+                        </m.span>
                       </button>
                       {/* Underline on dropdown buttons too */}
-                      <motion.span
+                      <m.span
                         className="absolute -bottom-0.5 left-2 right-2 h-px bg-cyan-400/80 origin-left"
                         variants={{ rest: { scaleX: 0 }, hover: { scaleX: 1 } }}
                         transition={{ duration: 0.25, ease: EASE }}
                       />
-                    </motion.div>
+                    </m.div>
                   )}
 
                   {link.dropdown && (
@@ -308,7 +308,7 @@ export function Navbar() {
               ))}
             </nav>
 
-            {/* ── Right actions ── */}
+            {/* â”€â”€ Right actions â”€â”€ */}
             <div className="hidden lg:flex items-center gap-3">
               <ThemeToggleSimple />
 
@@ -323,7 +323,7 @@ export function Navbar() {
                 Sign in
               </Link>
 
-              <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }} transition={{ duration: 0.15, ease: EASE }}>
+              <m.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.96 }} transition={{ duration: 0.15, ease: EASE }}>
                 <Link
                   href="/dashboard"
                   className="group flex items-center gap-1.5 rounded-full bg-cyan-500 px-5 py-2 text-sm font-bold text-white shadow-lg shadow-cyan-500/25 hover:bg-cyan-400 transition-colors"
@@ -332,13 +332,13 @@ export function Navbar() {
                   Get Started
                   <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-0.5" />
                 </Link>
-              </motion.div>
+              </m.div>
             </div>
 
-            {/* ── Mobile hamburger ── */}
+            {/* â”€â”€ Mobile hamburger â”€â”€ */}
             <div className="flex items-center gap-2 lg:hidden">
               <ThemeToggleSimple />
-              <motion.button
+              <m.button
                 onClick={() => setMobileOpen((v) => !v)}
                 whileHover={{ scale: 1.08 }}
                 whileTap={{ scale: 0.9 }}
@@ -352,7 +352,7 @@ export function Navbar() {
               >
                 <AnimatePresence mode="wait" initial={false}>
                   {mobileOpen ? (
-                    <motion.span
+                    <m.span
                       key="x"
                       initial={{ rotate: -45, opacity: 0 }}
                       animate={{ rotate: 0, opacity: 1 }}
@@ -360,9 +360,9 @@ export function Navbar() {
                       transition={{ duration: 0.2, ease: EASE }}
                     >
                       <X className="h-5 w-5" />
-                    </motion.span>
+                    </m.span>
                   ) : (
-                    <motion.span
+                    <m.span
                       key="menu"
                       initial={{ rotate: 45, opacity: 0 }}
                       animate={{ rotate: 0, opacity: 1 }}
@@ -370,19 +370,20 @@ export function Navbar() {
                       transition={{ duration: 0.2, ease: EASE }}
                     >
                       <Menu className="h-5 w-5" />
-                    </motion.span>
+                    </m.span>
                   )}
                 </AnimatePresence>
-              </motion.button>
+              </m.button>
             </div>
           </div>
         </div>
-      </motion.header>
+      </m.header>
 
       {/* Mobile menu rendered outside the header for proper stacking */}
       <MobileMenu isOpen={mobileOpen} onClose={() => setMobileOpen(false)} />
 
-      {/* Spacer — only when NOT scrolled (hero section handles its own padding) */}
+      {/* Spacer â€” only when NOT scrolled (hero section handles its own padding) */}
     </>
   );
 }
+

@@ -1,7 +1,7 @@
-"use client";
+﻿"use client";
 
 import { useEffect, useState, useMemo } from "react";
-import { motion, useReducedMotion } from "framer-motion";
+import { m, useReducedMotion } from "framer-motion";
 
 interface DecodeTextProps {
   text: string;
@@ -134,7 +134,7 @@ export function DecodeText({ text, className, style, underlineWord, delayMs = 10
             return (
               <span key={i} className="inline-flex relative">
                 {/* Character */}
-                <motion.span
+                <m.span
                   initial={false}
                   animate={{
                     opacity: isHidden ? 0 : 1,
@@ -145,11 +145,11 @@ export function DecodeText({ text, className, style, underlineWord, delayMs = 10
                   className="inline-block"
                 >
                   {isHidden ? char : state.char}
-                </motion.span>
+                </m.span>
                 
                 {/* Typing Cursor (inline) */}
                 {cursorState !== "finished" && currentTypingIndex === i && (
-                  <motion.span
+                  <m.span
                     layoutId="decode-cursor"
                     animate={{ opacity: cursorState === "pulsing" ? [1, 0.4, 1] : [1, 0.4] }}
                     transition={{
@@ -172,7 +172,7 @@ export function DecodeText({ text, className, style, underlineWord, delayMs = 10
               {(() => {
                  const spaceIdx = globalCharIndex++;
                  return cursorState !== "finished" && currentTypingIndex === spaceIdx && (
-                    <motion.span
+                    <m.span
                       layoutId="decode-cursor"
                       animate={{ opacity: [1, 0.4] }}
                       transition={{ repeat: Infinity, repeatType: "mirror", duration: 0.6 }}
@@ -185,7 +185,7 @@ export function DecodeText({ text, className, style, underlineWord, delayMs = 10
 
           {/* Final Morphing Underline */}
           {cursorState === "finished" && isUnderlineTarget && !prefersReducedMotion && (
-            <motion.span
+            <m.span
               layoutId="decode-cursor"
               initial={{ opacity: 1 }}
               animate={{ opacity: 0.35 }}
@@ -210,7 +210,7 @@ export function DecodeText({ text, className, style, underlineWord, delayMs = 10
       
       {/* Initial Cursor Position (before typing starts) */}
       {cursorState === "typing" && currentTypingIndex === -1 && (
-        <motion.span
+        <m.span
           layoutId="decode-cursor"
           animate={{ opacity: [1, 0.4] }}
           transition={{ repeat: Infinity, repeatType: "mirror", duration: 0.6 }}
@@ -220,3 +220,4 @@ export function DecodeText({ text, className, style, underlineWord, delayMs = 10
     </span>
   );
 }
+
