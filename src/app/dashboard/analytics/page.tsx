@@ -356,7 +356,7 @@ export default function AnalyticsPage() {
 
   const conversionRate = (mockFunnelData.orderConfirmed / mockFunnelData.totalVisits) * 100;
 
-  // Build typed funnel stages
+  // Build typed funnel stages for Business
   const funnelStages: FunnelStage[] = mockFunnelData.chartData.map((d, i) => ({
     stage: d.stage,
     count: d.count,
@@ -365,8 +365,16 @@ export default function AnalyticsPage() {
 
   // Creator-specific derived stats
   const totalClicks   = mockCreatorLinks.reduce((s, l) => s + l.clicks, 0);
-  const totalOrders   = mockCreatorLinks.reduce((s, l) => s + l.orders, 0);
-  const myConversion  = totalClicks > 0 ? (totalOrders / totalClicks) * 100 : 0;
+  const scaleFactor   = mockFunnelData.totalVisits > 0 ? totalClicks / mockFunnelData.totalVisits : 0;
+  
+  const creatorFunnelStages: FunnelStage[] = mockFunnelData.chartData.map((d, i) => ({
+    stage: d.stage,
+    count: Math.round(d.count * scaleFactor),
+    icon: stageIcons[i % stageIcons.length],
+  }));
+
+  const creatorTotalOrders = creatorFunnelStages[creatorFunnelStages.length - 1]?.count || 0;
+  const myConversion  = totalClicks > 0 ? (creatorTotalOrders / totalClicks) * 100 : 0;
 
   // ── Skeleton ──────────────────────────────────────────────────────────────
   const skeletonChart = (
@@ -501,7 +509,7 @@ export default function AnalyticsPage() {
                 <span className="text-xs font-bold uppercase tracking-wider text-cyan-700 dark:text-cyan-400">Last 30 Days</span>
               </div>
             </div>
-            <PremiumFunnelChart stages={funnelStages} />
+            <PremiumFunnelChart stages={creatorFunnelStages} />
           </motion.div>
         )}
         {isLoading && skeletonChart}
